@@ -1,3 +1,9 @@
 <header th:fragment="header">
-  <h2>HEADER</h2>
+    <h2>HEADER</h2>
+    <form>
+        <select name="lang" id="locale-select" aria-label="Language" onchange="handleLanguageSelectChange()">
+            <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+            <option value="uk" th:selected="${#locale.language == 'uk'}">Українська</option>
+        </select>
+    </form>
 </header>
