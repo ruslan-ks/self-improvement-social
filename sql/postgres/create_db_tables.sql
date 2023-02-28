@@ -92,6 +92,9 @@ CREATE TABLE user_activities_completions
     completed_at     timestamptz NOT NULL DEFAULT now()
 );
 
+INSERT INTO USERS(name, email, password, role)
+VALUES ('Root', 'root@root.com', '$2a$10$Vnz906hKibvdKesDSmalbec2UkOMVaR05XKnFxULWD5kAj6oX.vXG', 'ROOT');
+
 -- 1.repetitive activity type:
 -- daily,
 -- weekly,
