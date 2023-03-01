@@ -1,9 +1,36 @@
-<header th:fragment="header">
-    <h2>HEADER</h2>
-    <form>
-        <select name="lang" id="locale-select" aria-label="Language" onchange="handleLanguageSelectChange()">
-            <option value="en" th:selected="${#locale.language == 'en'}">English</option>
-            <option value="uk" th:selected="${#locale.language == 'uk'}">Українська</option>
-        </select>
-    </form>
+<header th:fragment="header" class="navbar navbar-expand-md bg-dark navbar-dark">
+    <div class="container">
+        <a href="#" class="navbar-brand">Self Improvement</a>
+
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <nav class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Activities</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="navbarScrollingDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">Username</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                        <li><a href="#" class="dropdown-item">Activities</a></li>
+                        <li><a href="#" class="dropdown-item">Dashboard</a></li>
+                        <hr class="dropdown-divider">
+                        <li><a href="#" class="dropdown-item">Log out</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item my-auto">
+                    <select name="lang" id="localeSelect" class="form-select form-select-sm"
+                            aria-label="language" onchange="handleLanguageSelectChange()">
+                        <option value="en" th:selected="${#locale.language == 'en'}">English</option>
+                        <option value="uk" th:selected="${#locale.language == 'uk'}">Українська</option>
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </header>

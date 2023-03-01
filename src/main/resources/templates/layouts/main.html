@@ -7,13 +7,14 @@
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
-<div>
+<div layout:fragment="pre-content-space" style="height: 60px"></div>
+<section>
     <div layout:fragment="content">
         <h1>This is the Layout's main section</h1>
         <p>This content will be replaced if the page
             using the layout also defines a layout:fragment="content" segment.</p>
     </div>
-</div>
+</section>
 <script th:src="@{/js/language-select.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
