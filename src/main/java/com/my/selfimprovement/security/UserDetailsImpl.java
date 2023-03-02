@@ -1,6 +1,9 @@
 package com.my.selfimprovement.security;
 
 import com.my.selfimprovement.entity.User;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,11 +11,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public record UserDetailsImpl(User user) implements UserDetails {
+@RequiredArgsConstructor
+@ToString
+public class UserDetailsImpl implements UserDetails {
+
+    @Getter
+    private final User user;
+
+    private Collection<GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        if (authorities == null) {
+            authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        }
+        return authorities;
     }
 
     @Override
