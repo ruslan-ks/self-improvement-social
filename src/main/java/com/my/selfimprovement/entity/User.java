@@ -1,6 +1,7 @@
 package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,25 +27,34 @@ public class User implements Serializable {
     private long id;
 
     @Column(name = "name")
+    @NotEmpty(message = "{valid.user.name.notEmpty}")
+    @Size(min = 2, max = 128, message = "{valid.user.name.size}")
     private String name;
 
     @Column(name = "surname")
+    @Size(min = 2, max = 128, message = "{valid.user.surname.size}")
     private String surname;
 
     @Column(name = "email")
+    @NotEmpty(message = "{valid.user.email.notEmpty}")
+    @Size(min = 2, max = 128, message = "{valid.user.email.size}")
+    @Email(message = "{valid.user.email.format}")
     private String email;
 
     @Column(name = "password")
+    @NotEmpty(message = "{valid.user.password.notEmpty}")
+    @Size(min = 4, message = "{valid.user.password.size}")
     private String password;
 
     @Column(name = "birthday")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "{valid.user.birthday.past}")
     private Date birthday;
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
 
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
