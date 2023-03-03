@@ -1,7 +1,6 @@
 package com.my.selfimprovement.security;
 
 import com.my.selfimprovement.service.UserService;
-import com.my.selfimprovement.util.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,11 +13,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        try {
-            return new UserDetailsImpl(userService.findByEmail(email));
-        } catch (UserNotFoundException ex) {
-            throw new UsernameNotFoundException("User with email '" + email + "' not found.");
-        }
+        return new UserDetailsImpl(userService.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User with email '" + email + "' not found.")));
     }
 
 }
