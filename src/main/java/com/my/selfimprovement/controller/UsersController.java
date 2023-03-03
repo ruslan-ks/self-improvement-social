@@ -2,6 +2,7 @@ package com.my.selfimprovement.controller;
 
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
+import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,8 @@ public class UsersController {
 
     private final PasswordEncoder encoder;
 
+    private final UserValidator userValidator;
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
@@ -34,6 +37,7 @@ public class UsersController {
 
     @PostMapping
     public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             for (var error : bindingResult.getFieldErrors()) {
                 log.warn("Invalid user property: {}", error.getDefaultMessage());
