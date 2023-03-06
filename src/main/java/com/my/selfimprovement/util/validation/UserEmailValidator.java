@@ -2,7 +2,9 @@ package com.my.selfimprovement.util.validation;
 
 import com.my.selfimprovement.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -14,9 +16,15 @@ import org.springframework.validation.Errors;
 @RequiredArgsConstructor
 public class UserEmailValidator {
 
-    private final UserService userService;
-
     private final MessageSource messageSource;
+
+    private UserService userService;
+
+    @Autowired
+    @Lazy
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     public void validate(String email, Errors errors) {
         if (email != null && userService.findByEmail(email).isPresent()) {

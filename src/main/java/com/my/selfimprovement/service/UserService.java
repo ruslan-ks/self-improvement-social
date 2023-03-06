@@ -1,8 +1,8 @@
 package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.User;
+import jakarta.validation.Valid;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -14,8 +14,6 @@ public interface UserService {
      */
     Optional<User> findByEmail(String email);
 
-    void save(User user);
-
-    List<User> findAll();
+    void save(@Valid User user);
 
 }
