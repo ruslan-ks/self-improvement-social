@@ -17,6 +17,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
@@ -24,7 +25,7 @@ import java.util.List;
 @Slf4j
 public class UsersController {
 
-    private static final int PAGE_SIZE = 2;
+    private static final int DEFAULT_PAGE_SIZE = 2;
 
     private final UserService userService;
 
@@ -66,8 +67,10 @@ public class UsersController {
 
     @GetMapping
     @ResponseBody
-    public List<MinimalUserResponse> minimalUserResponsePage(@RequestParam("page") int pageIndex) {
-        return userService.findActiveUsersPage(pageIndex, PAGE_SIZE)
+    public List<MinimalUserResponse> minimalUserResponsePage(@RequestParam("page") int pageIndex,
+            @RequestParam(value = "pageSize") Optional<Integer> pageSizeParam) {
+        int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
+        return userService.findActiveUsersPage(pageIndex, pageSize)
                 .map(u -> {
                     var dto = modelMapper.map(u, MinimalUserResponse.class);
                     dto.setActivityCount(u.getActivities().size());
