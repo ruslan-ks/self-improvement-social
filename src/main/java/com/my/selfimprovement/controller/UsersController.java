@@ -1,5 +1,6 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.MinimalUserResponse;
 import com.my.selfimprovement.dto.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
@@ -15,11 +16,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UsersController {
+
+    private static final int PAGE_SIZE = 2;
 
     private final UserService userService;
 
@@ -57,6 +62,18 @@ public class UsersController {
 
     private User toUser(UserRegistrationRequest userRegistrationRequest) {
         return modelMapper.map(userRegistrationRequest, User.class);
+    }
+
+    @GetMapping
+    @ResponseBody
+    public List<MinimalUserResponse> minimalUserResponsePage(@RequestParam("page") int pageIndex) {
+        return userService.findActiveUsersPage(pageIndex, PAGE_SIZE)
+                .map(u -> {
+                    var dto = modelMapper.map(u, MinimalUserResponse.class);
+                    dto.setActivityCount(u.getActivities().size());
+                    return dto;
+                })
+                .toList();
     }
 
 }

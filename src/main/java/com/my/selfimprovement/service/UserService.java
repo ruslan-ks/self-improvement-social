@@ -4,6 +4,7 @@ import com.my.selfimprovement.entity.User;
 import jakarta.validation.Valid;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface UserService {
 
@@ -13,6 +14,8 @@ public interface UserService {
      * @return found User optional
      */
     Optional<User> findByEmail(String email);
+
+    Stream<User> findActiveUsersPage(int pageIndex, int pageSize);
 
     void save(@Valid User user);
 
