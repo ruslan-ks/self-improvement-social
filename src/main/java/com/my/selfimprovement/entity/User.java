@@ -21,6 +21,11 @@ public class User implements Serializable {
         ROOT
     }
 
+    public enum Status {
+        ACTIVE,
+        LOCKED
+    }
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +60,10 @@ public class User implements Serializable {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVE;
 
     @Column(name = "registered_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)

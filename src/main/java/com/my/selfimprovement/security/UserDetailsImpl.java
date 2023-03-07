@@ -45,7 +45,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.getStatus() != User.Status.LOCKED;
     }
 
     @Override

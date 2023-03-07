@@ -11,6 +11,7 @@ CREATE TABLE users
     password      text        NOT NULL,
     birthday      date,
     role          text        NOT NULL DEFAULT 'USER',
+    status        text        NOT NULL DEFAULT 'ACTIVE',
     registered_at timestamptz NOT NULL DEFAULT now()
 );
 
@@ -92,8 +93,25 @@ CREATE TABLE user_activities_completions
     completed_at     timestamptz NOT NULL DEFAULT now()
 );
 
-INSERT INTO USERS(name, email, password, role)
+INSERT INTO users(name, email, password, role)
 VALUES ('Root', 'root@root.com', '$2a$10$Vnz906hKibvdKesDSmalbec2UkOMVaR05XKnFxULWD5kAj6oX.vXG', 'ROOT');
+
+INSERT INTO activities(name, description, minutes_required, author_id)
+VALUES ('Coding', 'Write code', 60, 1),
+       ('Cooking', 'Make a dish', 45, 1),
+       ('Learning english', 'Just learn it', 120, 1);
+
+INSERT INTO repetitive_activities(activity_id, period_type, times_per_period)
+VALUES (1, 'DAILY', 1);
+
+INSERT INTO user_activities(user_id, activity_id)
+VALUES (1, 1),
+       (1, 2);
+
+INSERT INTO user_activities_completions(user_activity_id)
+VALUES (1),
+       (1),
+       (1);
 
 -- 1.repetitive activity type:
 -- daily,
