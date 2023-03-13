@@ -1,35 +1,43 @@
 package com.my.selfimprovement.util.validation;
 
-import jakarta.validation.ConstraintViolationException;
+import com.my.selfimprovement.util.exception.ValidationException;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Extends {@link Validator} by adding throwing {@link CustomValidator#validate(T obj)} method.<br>
+ * Adds throwing {@link CustomValidator#validate(T obj)} method.<br>
  * Validator class should implement this interface if it needs single-argument throwing alternative
  * for {@link Validator#validate(Object, Errors)} method
  * @param <T> validated object type
  */
-public interface CustomValidator<T> extends Validator {
+public abstract class CustomValidator<T> implements Validator {
 
     /**
-     * Throws {@link ConstraintViolationException} if any of {@code obj} fields are invalid
+     * Throws {@link ValidationException} implementation(implementation-defined) if any of {@code obj} fields are
+     * invalid
      * @param obj object to be validated
      */
-    default void validate(T obj) {
-        var builder = new StringBuilder();
+    public void validate(T obj) {
         var bindingResult = new BeanPropertyBindingResult(obj, obj.getClass().getSimpleName());
         validate(obj, bindingResult);
         if (bindingResult.hasErrors()) {
-            bindingResult.getFieldErrors()
-                    .forEach(err -> builder.append(err.getField())
-                            .append(": ")
-                            .append(err.getRejectedValue())
-                            .append(" - ")
-                            .append(err.getDefaultMessage()));
-            throw new ConstraintViolationException(builder.toString(), null);
+            Map<String, String> fieldErrorMap = bindingResult.getFieldErrors()
+                    .stream()
+                    .collect(HashMap::new, (m, v) -> m.put(v.getField(), v.getDefaultMessage()), HashMap::putAll);
+            throw createValidationException(fieldErrorMap);
         }
     }
+
+    /**
+     * Creates ValidationException implementation instance to be thrown. Should always return new instance.<br>
+     * Called only when validation errors occur in {@link CustomValidator#validate(Object)}
+     * @param fieldErrorMap validation errors
+     * @return new instance of ValidationException to be throws from {@link CustomValidator#validate(Object)}
+     */
+    protected abstract ValidationException createValidationException(Map<String, String> fieldErrorMap);
 
 }

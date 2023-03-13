@@ -9,18 +9,13 @@ import org.springframework.validation.Errors;
 
 @Component
 @RequiredArgsConstructor
-public class UserRegistrationRequestValidatorImpl implements UserRegistrationRequestValidator {
+public class UserRegistrationRequestValidatorImpl extends UserRegistrationRequestValidator {
 
     private static final String IDENTICAL_PASSWORDS_KEY = "valid.user.passwords.identical";
 
     private final UserEmailValidator userEmailValidator;
 
     private final MessageSource messageSource;
-
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return UserRegistrationRequest.class.equals(aClass);
-    }
 
     @Override
     public void validate(Object target, Errors errors) {

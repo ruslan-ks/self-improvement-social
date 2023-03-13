@@ -7,14 +7,9 @@ import org.springframework.validation.Errors;
 
 @Component
 @RequiredArgsConstructor
-public class UserValidatorImpl implements UserValidator {
+public class UserValidatorImpl extends UserValidator {
 
     private final UserEmailValidator userEmailValidator;
-
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return aClass.equals(User.class);
-    }
 
     @Override
     public void validate(Object target, Errors errors) {
