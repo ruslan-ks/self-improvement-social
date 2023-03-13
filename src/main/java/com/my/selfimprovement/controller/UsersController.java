@@ -10,9 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,20 +45,27 @@ public class UsersController {
         return "users/new";
     }
 
+//    @PostMapping
+//    public String create(@ModelAttribute("user") @Valid UserRegistrationRequest userRegistrationRequest,
+//                         BindingResult bindingResult) {
+//        userRegistrationRequestValidator.validate(userRegistrationRequest, bindingResult);
+//        User user = toUser(userRegistrationRequest);
+//        if (bindingResult.hasErrors()) {
+//            logUserValidationErrors(bindingResult);
+//            return "users/new";
+//        }
+//        user.setPassword(encoder.encode(user.getPassword()));
+//        userService.save(user);
+//        return "redirect:/login";
+//    }
+
     @PostMapping
-    public String create(@ModelAttribute("user") @Valid UserRegistrationRequest userRegistrationRequest,
-                         BindingResult bindingResult) {
-        userRegistrationRequestValidator.validate(userRegistrationRequest, bindingResult);
+    public ResponseEntity<?> create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
+        userRegistrationRequestValidator.validate(userRegistrationRequest);
         User user = toUser(userRegistrationRequest);
-        if (bindingResult.hasErrors()) {
-            for (var error : bindingResult.getFieldErrors()) {
-                log.warn("Failed to register user! Invalid user property: {}", error.getDefaultMessage());
-            }
-            return "users/new";
-        }
         user.setPassword(encoder.encode(user.getPassword()));
         userService.save(user);
-        return "redirect:/login";
+        return ResponseEntity.ok().build();
     }
 
     private User toUser(UserRegistrationRequest userRegistrationRequest) {
