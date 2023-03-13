@@ -2,7 +2,7 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
-import com.my.selfimprovement.util.validation.ThrowingUserValidator;
+import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final ThrowingUserValidator userValidator;
+    private final UserValidator userValidator;
 
     @Override
     public Optional<User> findByEmail(String email) {
