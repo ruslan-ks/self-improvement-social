@@ -26,7 +26,7 @@ public class AuthController {
     public Map<String, String> login(@RequestBody UserLoginRequest request) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        log.info("Login request for user: {}", auth.getName());
+        log.debug("Login request for user: {}", auth.getName());
         String jwt = jwtService.generateToken(auth);
         return Map.of("jwt", jwt);
     }

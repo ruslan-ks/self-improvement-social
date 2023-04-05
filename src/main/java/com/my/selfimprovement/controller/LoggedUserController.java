@@ -12,7 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 @Slf4j
-public class UserController {
+public class LoggedUserController {
 
     @GetMapping("/json")
     public Map<String, String> userData(@AuthenticationPrincipal Jwt jwt) {
