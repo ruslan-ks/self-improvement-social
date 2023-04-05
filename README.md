@@ -16,6 +16,11 @@ Spring boot REST API project
 |--------|-----------------------------|-----------------------------|--------------|
 | GET    | /users?page=N\[&pageSize=M] | List of MinimalUserResponse |              |
 
+#### Validation errors
+Validation error response has status 400 Bad Request and contains a map of ``field:error`` pairs.<br>
+For example: 
+``{ "email": "Email is already in use", "name": "Name should not be empty" }``
+
 ### Authorization
 
 #### JWT

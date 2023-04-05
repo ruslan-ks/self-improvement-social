@@ -11,10 +11,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Handles exceptions thrown by <strong>controller level validators</strong> and returns corresponding response.
+ */
 @ControllerAdvice
 @Slf4j
-public class ValidatingControllerAdvice {
+public class ValidationExceptionControllerAdvice {
 
+    /**
+     * Handles exceptions thrown by <strong>Spring</strong> validation
+     * @param ex caught exception
+     * @return response - map of field:error pairs
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String, String> errors = ex.getFieldErrors()
@@ -25,6 +33,11 @@ public class ValidatingControllerAdvice {
                 .body(errors);
     }
 
+    /**
+     * Handles exceptions thrown by <strong>custom</strong> controller level validators
+     * @param ex caught exception
+     * @return response - map of field:error pairs
+     */
     @ExceptionHandler(ControllerValidationException.class)
     public ResponseEntity<Map<String, String>> handleConstraintViolation(ControllerValidationException ex) {
         Map<String, String> errors = ex.getFieldErrorMap();
