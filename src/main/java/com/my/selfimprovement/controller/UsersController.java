@@ -12,14 +12,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
@@ -54,7 +53,6 @@ public class UsersController {
     }
 
     @GetMapping
-    @ResponseBody
     public List<MinimalUserResponse> minimalUserResponsePage(@RequestParam("page") int pageIndex,
             @RequestParam(value = "pageSize") Optional<Integer> pageSizeParam) {
         int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
