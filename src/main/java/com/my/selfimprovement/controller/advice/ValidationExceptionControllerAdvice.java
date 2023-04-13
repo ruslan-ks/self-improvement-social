@@ -1,4 +1,4 @@
-package com.my.selfimprovement.config;
+package com.my.selfimprovement.controller.advice;
 
 import com.my.selfimprovement.util.exception.ControllerValidationException;
 import lombok.extern.slf4j.Slf4j;
