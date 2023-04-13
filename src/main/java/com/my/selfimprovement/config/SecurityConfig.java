@@ -37,8 +37,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String LOGIN_URL = "/login";
-
     private final RsaKeyProperties rsaKeys;
 
     @Bean
@@ -79,7 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/root/**").hasRole(User.Role.ROOT.name())
                         .requestMatchers("/admin/**").hasAnyRole(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/user/**").authenticated()
-                        .requestMatchers(LOGIN_URL).anonymous()
+                        .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
