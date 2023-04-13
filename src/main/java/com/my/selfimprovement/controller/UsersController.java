@@ -40,25 +40,6 @@ public class UsersController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @GetMapping("/new")
-    public String signUpPage(@ModelAttribute("user") UserRegistrationRequest userRegistrationRequest) {
-        return "users/new";
-    }
-
-//    @PostMapping
-//    public String create(@ModelAttribute("user") @Valid UserRegistrationRequest userRegistrationRequest,
-//                         BindingResult bindingResult) {
-//        userRegistrationRequestValidator.validate(userRegistrationRequest, bindingResult);
-//        User user = toUser(userRegistrationRequest);
-//        if (bindingResult.hasErrors()) {
-//            logUserValidationErrors(bindingResult);
-//            return "users/new";
-//        }
-//        user.setPassword(encoder.encode(user.getPassword()));
-//        userService.save(user);
-//        return "redirect:/login";
-//    }
-
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
         userRegistrationRequestValidator.validate(userRegistrationRequest);
