@@ -1,6 +1,9 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.ResponseBody;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +18,13 @@ import java.util.Map;
 public class LoggedUserController {
 
     @GetMapping("/json")
-    public Map<String, String> userData(@AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<ResponseBody> userData(@AuthenticationPrincipal Jwt jwt) {
         log.info("GET /user/json: principal jwt claims: {}", jwt.getClaims());
-        return Map.of("username", jwt.getClaim("sub"),
-                "scope", jwt.getClaim("scope"));
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("username", jwt.getClaim("sub"), "scope", jwt.getClaim("scope")))
+                .build();
+        return ResponseEntity.ok(responseBody);
     }
 
 }

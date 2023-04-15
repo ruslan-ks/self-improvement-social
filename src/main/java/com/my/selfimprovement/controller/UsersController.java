@@ -1,6 +1,7 @@
 package com.my.selfimprovement.controller;
 
 import com.my.selfimprovement.dto.MinimalUserResponse;
+import com.my.selfimprovement.dto.ResponseBody;
 import com.my.selfimprovement.dto.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
@@ -10,12 +11,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -40,12 +43,17 @@ public class UsersController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
+    public ResponseEntity<ResponseBody> create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
         userRegistrationRequestValidator.validate(userRegistrationRequest);
         User user = toUser(userRegistrationRequest);
         user.setPassword(encoder.encode(user.getPassword()));
         userService.save(user);
-        return ResponseEntity.ok().build();
+
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.CREATED)
+                .data(Map.of("user", user))
+                .build();
+        return ResponseEntity.ok(responseBody);
     }
 
     private User toUser(UserRegistrationRequest userRegistrationRequest) {
@@ -53,16 +61,21 @@ public class UsersController {
     }
 
     @GetMapping
-    public List<MinimalUserResponse> minimalUserResponsePage(@RequestParam("page") int pageIndex,
-            @RequestParam(value = "pageSize") Optional<Integer> pageSizeParam) {
+    public ResponseEntity<ResponseBody> minimalUserResponsePage(@RequestParam("page") int pageIndex,
+                                                                @RequestParam("pageSize") Optional<Integer> pageSizeParam) {
         int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
-        return userService.findActiveUsersPage(pageIndex, pageSize)
+        List<MinimalUserResponse> users = userService.findActiveUsersPage(pageIndex, pageSize)
                 .map(u -> {
                     var dto = modelMapper.map(u, MinimalUserResponse.class);
                     dto.setActivityCount(u.getActivities().size());
                     return dto;
                 })
                 .toList();
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("users", users))
+                .build();
+        return ResponseEntity.ok(responseBody);
     }
 
 }

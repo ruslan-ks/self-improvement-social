@@ -1,5 +1,6 @@
 package com.my.selfimprovement.controller.advice;
 
+import com.my.selfimprovement.dto.ResponseBody;
 import com.my.selfimprovement.util.exception.ControllerValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,16 +22,16 @@ public class ValidationExceptionControllerAdvice {
     /**
      * Handles exceptions thrown by <strong>Spring</strong> validation
      * @param ex caught exception
-     * @return response - map of field:error pairs
+     * @return response with data - map of field:error pairs
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ResponseBody> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         Map<String, String> errors = ex.getFieldErrors()
                 .stream()
                 .collect(HashMap::new, (m, v) -> m.put(v.getField(), v.getDefaultMessage()), HashMap::putAll);
         logValidationErrors(errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(errors);
+        ResponseBody responseBody = validationFailResponseBody(errors);
+        return ResponseEntity.badRequest().body(responseBody);
     }
 
     /**
@@ -39,17 +40,25 @@ public class ValidationExceptionControllerAdvice {
      * @return response - map of field:error pairs
      */
     @ExceptionHandler(ControllerValidationException.class)
-    public ResponseEntity<Map<String, String>> handleConstraintViolation(ControllerValidationException ex) {
+    public ResponseEntity<ResponseBody> handleConstraintViolation(ControllerValidationException ex) {
         Map<String, String> errors = ex.getFieldErrorMap();
         logValidationErrors(errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(errors);
+        ResponseBody responseBody = validationFailResponseBody(errors);
+        return ResponseEntity.badRequest().body(responseBody);
     }
 
     private void logValidationErrors(Map<String, String> fieldErrorMap) {
         for (var entry : fieldErrorMap.entrySet()) {
             log.warn("Invalid field value: {}: {}", entry.getKey(), entry.getValue());
         }
+    }
+
+    private ResponseBody validationFailResponseBody(Map<String, String> errors) {
+        return ResponseBody.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message("Validation failed")
+                .data(Map.of("errors", errors))
+                .build();
     }
 
 }
