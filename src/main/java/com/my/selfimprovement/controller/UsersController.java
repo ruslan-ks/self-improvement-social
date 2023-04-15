@@ -1,5 +1,6 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.response.DetailedUserResponse;
 import com.my.selfimprovement.dto.response.MinimalUserResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.dto.request.UserRegistrationRequest;
@@ -49,20 +50,25 @@ public class UsersController {
         user.setPassword(encoder.encode(user.getPassword()));
         userService.save(user);
 
+        DetailedUserResponse detailedUserResponse = toDetailedUserResponse(user);
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.CREATED)
-                .data(Map.of("user", user))
+                .data(Map.of("user", detailedUserResponse))
                 .build();
-        return ResponseEntity.ok(responseBody);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
     private User toUser(UserRegistrationRequest userRegistrationRequest) {
         return modelMapper.map(userRegistrationRequest, User.class);
     }
 
+    private DetailedUserResponse toDetailedUserResponse(User user) {
+        return modelMapper.map(user, DetailedUserResponse.class);
+    }
+
     @GetMapping
     public ResponseEntity<ResponseBody> minimalUserResponsePage(@RequestParam("page") int pageIndex,
-                                                                @RequestParam("pageSize") Optional<Integer> pageSizeParam) {
+            @RequestParam("pageSize") Optional<Integer> pageSizeParam) {
         int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
         List<MinimalUserResponse> users = userService.findActiveUsersPage(pageIndex, pageSize)
                 .map(u -> {
