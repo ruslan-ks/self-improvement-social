@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class MinimalUserResponse {
+public class ShortUserResponse {
 
     private long id;
 
