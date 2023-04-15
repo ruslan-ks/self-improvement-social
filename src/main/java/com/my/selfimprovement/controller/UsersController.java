@@ -59,7 +59,7 @@ public class UsersController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseBody> minimalUserResponsePage(@RequestParam("page") int pageIndex,
+    public ResponseEntity<ResponseBody> getActiveUsersPage(@RequestParam("page") int pageIndex,
             @RequestParam("pageSize") Optional<Integer> pageSizeParam) {
         int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
         List<ShortUserResponse> users = userService.findActiveUsersPage(pageIndex, pageSize)
