@@ -1,7 +1,7 @@
 package com.my.selfimprovement.controller;
 
-import com.my.selfimprovement.dto.ResponseBody;
-import com.my.selfimprovement.dto.UserLoginRequest;
+import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.dto.request.UserLoginRequest;
 import com.my.selfimprovement.service.token.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

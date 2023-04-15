@@ -1,8 +1,8 @@
 package com.my.selfimprovement.controller;
 
-import com.my.selfimprovement.dto.MinimalUserResponse;
-import com.my.selfimprovement.dto.ResponseBody;
-import com.my.selfimprovement.dto.UserRegistrationRequest;
+import com.my.selfimprovement.dto.response.MinimalUserResponse;
+import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;

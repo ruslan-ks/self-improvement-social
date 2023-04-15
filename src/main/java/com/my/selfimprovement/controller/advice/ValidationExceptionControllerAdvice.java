@@ -1,6 +1,6 @@
 package com.my.selfimprovement.controller.advice;
 
-import com.my.selfimprovement.dto.ResponseBody;
+import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.util.exception.ControllerValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

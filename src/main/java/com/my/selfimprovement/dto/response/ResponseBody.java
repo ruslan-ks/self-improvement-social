@@ -1,4 +1,4 @@
-package com.my.selfimprovement.dto;
+package com.my.selfimprovement.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

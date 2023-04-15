@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.validation;
 
-import com.my.selfimprovement.dto.UserRegistrationRequest;
+import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 
 public abstract class UserRegistrationRequestValidator extends ControllerLayerValidator<UserRegistrationRequest> {
 

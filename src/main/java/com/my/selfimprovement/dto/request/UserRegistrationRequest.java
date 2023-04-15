@@ -1,4 +1,4 @@
-package com.my.selfimprovement.dto;
+package com.my.selfimprovement.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

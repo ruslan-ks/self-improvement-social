@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.validation;
 
-import com.my.selfimprovement.dto.UserRegistrationRequest;
+import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
