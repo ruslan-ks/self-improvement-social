@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,15 +21,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
 public class UsersController {
-
-    private static final int DEFAULT_PAGE_SIZE = 2;
 
     private final UserService userService;
 
@@ -59,10 +57,9 @@ public class UsersController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseBody> getActiveUsersPage(@RequestParam("page") int pageIndex,
-            @RequestParam("pageSize") Optional<Integer> pageSizeParam) {
-        int pageSize = pageSizeParam.orElse(DEFAULT_PAGE_SIZE);
-        List<ShortUserResponse> users = userService.findActiveUsersPage(pageIndex, pageSize)
+    public ResponseEntity<ResponseBody> getActiveUsersPage(Pageable pageable) {
+        log.info("Pageable: {}", pageable);
+        List<ShortUserResponse> users = userService.findActiveUsersPage(pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
         ResponseBody responseBody = ResponseBody.builder()

@@ -5,8 +5,7 @@ import com.my.selfimprovement.repository.UserRepository;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -30,9 +29,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Stream<User> findActiveUsersPage(int pageIndex, int pageSize) {
-        PageRequest pageRequest = PageRequest.of(pageIndex, pageSize, Sort.by("name"));
-        return userRepository.findByStatus(User.Status.ACTIVE, pageRequest).stream();
+    public Stream<User> findActiveUsersPage(Pageable pageable) {
+        return userRepository.findByStatus(User.Status.ACTIVE, pageable).stream();
     }
 
     @Transactional

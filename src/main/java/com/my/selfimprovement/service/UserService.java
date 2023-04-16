@@ -2,6 +2,7 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.User;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,7 +16,7 @@ public interface UserService {
      */
     Optional<User> findByEmail(String email);
 
-    Stream<User> findActiveUsersPage(int pageIndex, int pageSize);
+    Stream<User> findActiveUsersPage(Pageable pageable);
 
     void save(@Valid User user);
 
