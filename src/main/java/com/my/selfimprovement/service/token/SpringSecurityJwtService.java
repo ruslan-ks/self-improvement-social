@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 public class SpringSecurityJwtService implements JwtService {
 
     private final JwtEncoder encoder;
+
+    private final JwtDecoder decoder;
 
     @Override
     public String generateToken(Authentication authentication) {
@@ -32,6 +35,11 @@ public class SpringSecurityJwtService implements JwtService {
                 .claim("scope", scope)
                 .build();
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    @Override
+    public Instant getExpiration(String jwt) {
+        return decoder.decode(jwt).getExpiresAt();
     }
 
 }

@@ -36,7 +36,7 @@ public class AuthController {
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
                 .timestamp(Instant.now())
-                .data(Map.of("jwt", jwt))
+                .data(Map.of("idToken", jwt, "expiresAt", jwtService.getExpiration(jwt)))
                 .build();
         return ResponseEntity.ok(responseBody);
     }
