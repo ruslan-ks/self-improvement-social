@@ -20,4 +20,5 @@ public interface UserService {
 
     void save(@Valid User user);
 
+    long count();
 }

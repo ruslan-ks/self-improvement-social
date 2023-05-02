@@ -69,4 +69,14 @@ public class UsersController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ResponseBody> count() {
+        long count = userService.count();
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("count", count))
+                .build();
+        return ResponseEntity.ok(responseBody);
+    }
+
 }
