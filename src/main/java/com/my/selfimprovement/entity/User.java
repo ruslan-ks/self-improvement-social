@@ -69,6 +69,9 @@ public class User implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Instant registeredAt;
 
+    @Column(name = "avatar_file_name")
+    private String avatarFileName;
+
     @ManyToMany
     @JoinTable(name = "user_followings",
             joinColumns = @JoinColumn(name = "user_id"),
