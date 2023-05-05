@@ -1,5 +1,6 @@
 package com.my.selfimprovement.service;
 
+import com.my.selfimprovement.util.exception.FileRemovalException;
 import com.my.selfimprovement.util.exception.FileUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -8,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.time.Instant;
 
 @Service
@@ -28,7 +26,6 @@ public class LocalFileService implements FileService {
         try {
             Files.copy(file.getInputStream(), fileStorage, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            log.error("Failed to save file: {}", file);
             log.error("Failed to save file! exception: ", ex);
             throw new FileUploadException(ex);
         }
@@ -39,6 +36,18 @@ public class LocalFileService implements FileService {
     private String generateUniqueFileName(MultipartFile file, long userId) {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         return "file" + userId + "_" + Instant.now().getEpochSecond() + "." + extension;
+    }
+
+    @Override
+    public void removeFromUploads(String fileName) {
+        Path filePath = Paths.get(filesUploadDir, fileName);
+        try {
+            Files.delete(filePath);
+        } catch (IOException ex) {
+            log.error("Failed to remove file '{}'", filePath);
+            log.error("Failed to remove file. IOException: ", ex);
+            throw new FileRemovalException(ex);
+        }
     }
 
 }
