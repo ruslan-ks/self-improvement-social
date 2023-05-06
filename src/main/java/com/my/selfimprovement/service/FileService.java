@@ -1,6 +1,9 @@
 package com.my.selfimprovement.service;
 
+import com.my.selfimprovement.util.LoadedFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface FileService {
 
@@ -21,5 +24,7 @@ public interface FileService {
      * the file
      */
     void removeFromUploads(String fileName);
+
+    LoadedFile getLoadedFile(String fileName) throws IOException;
 
 }

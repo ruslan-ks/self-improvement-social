@@ -1,5 +1,6 @@
 package com.my.selfimprovement.service;
 
+import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.exception.FileRemovalException;
 import com.my.selfimprovement.util.exception.FileUploadException;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,12 @@ public class LocalFileService implements FileService {
             log.error("Failed to remove file. IOException: ", ex);
             throw new FileRemovalException(ex);
         }
+    }
+
+    @Override
+    public LoadedFile getLoadedFile(String fileName) throws IOException {
+        Path filePath = Paths.get(filesUploadDir, fileName);
+        return new LoadedFile(filePath, Files.readAllBytes(filePath));
     }
 
 }
