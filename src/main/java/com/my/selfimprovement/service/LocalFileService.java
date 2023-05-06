@@ -2,8 +2,6 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.MediaTypeDetector;
-import com.my.selfimprovement.util.exception.FileRemovalException;
-import com.my.selfimprovement.util.exception.FileUploadException;
 import com.my.selfimprovement.util.exception.IllegalMediaTypeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +28,20 @@ public class LocalFileService implements FileService {
     private final MediaTypeDetector mediaTypeDetector;
 
     @Override
-    public String saveToUploads(MultipartFile file, long userId, Predicate<MediaType> isMediaTypeAllowed) {
+    public String saveToUploads(MultipartFile file, long userId, Predicate<MediaType> isMediaTypeAllowed)
+            throws IOException {
         String fileName = generateUniqueFileName(file, userId);
 
         throwIfMimeTypeIsIllegal(file, isMediaTypeAllowed);
 
-        Path fileStorage = Paths.get(filesUploadDir, fileName).toAbsolutePath();
-        try {
-            Files.copy(file.getInputStream(), fileStorage, StandardCopyOption.REPLACE_EXISTING);
+        Path filePath = Paths.get(filesUploadDir, fileName).toAbsolutePath();
+        try (var is = file.getInputStream()) {
+            Files.copy(is, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException ex) {
-            log.error("Failed to save file! exception: ", ex);
-            throw new FileUploadException(ex);
+            log.error("Failed to copy file. IOException occurred: ", ex);
+            throw ex;
         }
-        log.info("File uploaded: {}", fileStorage);
+        log.info("File uploaded: {}", filePath);
         return fileName;
     }
 
@@ -51,7 +50,8 @@ public class LocalFileService implements FileService {
         return "file" + userId + "_" + Instant.now().getEpochSecond() + "." + extension;
     }
 
-    private void throwIfMimeTypeIsIllegal(MultipartFile file, Predicate<MediaType> isMediaTypeAllowed) {
+    private void throwIfMimeTypeIsIllegal(MultipartFile file, Predicate<MediaType> isMediaTypeAllowed)
+            throws IOException {
         // Check media type obtained from content type
         String fileContentType = file.getContentType();
         if (fileContentType == null) {
@@ -73,25 +73,19 @@ public class LocalFileService implements FileService {
         }
     }
 
-    private MediaType detectMediaTypeFromMetadata(MultipartFile file) {
+    private MediaType detectMediaTypeFromMetadata(MultipartFile file) throws IOException {
         try (InputStream is = file.getInputStream()) {
             return mediaTypeDetector.detectByMetadata(is);
         } catch (IOException ex) {
             log.error("Failed to check mime type. Exception occurred: ", ex);
-            throw new FileUploadException(ex);
+            throw ex;
         }
     }
 
     @Override
-    public void removeFromUploads(String fileName) {
+    public void removeFromUploads(String fileName) throws IOException {
         Path filePath = Paths.get(filesUploadDir, fileName);
-        try {
-            Files.delete(filePath);
-        } catch (IOException ex) {
-            log.error("Failed to remove file '{}'", filePath);
-            log.error("Failed to remove file. IOException: ", ex);
-            throw new FileRemovalException(ex);
-        }
+        Files.delete(filePath);
     }
 
     @Override
