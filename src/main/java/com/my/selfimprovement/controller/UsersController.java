@@ -91,7 +91,6 @@ public class UsersController {
     @PutMapping("/{id}/avatar")
     public ResponseEntity<ResponseBody> uploadAvatar(@PathVariable("id") long userId,
                                                      @RequestParam("file") MultipartFile file) throws IOException {
-        log.info("Trying to set avatar: name: {}, size: {}", file.getOriginalFilename(), file.getSize());
         if (file.isEmpty()) {
             ResponseBody badRequestResponseBody = ResponseBody.builder()
                     .status(HttpStatus.BAD_REQUEST)
