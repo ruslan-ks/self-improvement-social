@@ -2,6 +2,7 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
+import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -55,9 +57,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void setUserAvatar(MultipartFile file, long userId) {
         String fileName = fileService.saveToUploads(file, userId);
+        User user = findByIdOrElseThrow(userId);
         try {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new NoSuchElementException("User not found. User id: " + userId));
             String oldAvatarFileName = user.getAvatarFileName();
             user.setAvatarFileName(fileName);
             if (oldAvatarFileName != null) {
@@ -68,6 +69,18 @@ public class UserServiceImpl implements UserService {
             fileService.removeFromUploads(fileName);
             throw ex;
         }
+    }
+
+    @Override
+    public LoadedFile getUserAvatar(long userId) throws IOException {
+        User user = findByIdOrElseThrow(userId);
+        String avatarFileName = user.getAvatarFileName();
+        return fileService.getLoadedFile(avatarFileName);
+    }
+
+    private User findByIdOrElseThrow(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found. User id: " + userId));
     }
 
 }
