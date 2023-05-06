@@ -12,6 +12,7 @@ CREATE TABLE users
     birthday      date,
     role          text        NOT NULL DEFAULT 'USER',
     status        text        NOT NULL DEFAULT 'ACTIVE',
+    avatar_file_name text UNIQUE,
     registered_at timestamptz NOT NULL DEFAULT now()
 );
 
