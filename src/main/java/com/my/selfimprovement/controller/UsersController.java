@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,25 +85,6 @@ public class UsersController {
                 .data(Map.of("count", count))
                 .build();
         return ResponseEntity.ok(responseBody);
-    }
-
-    @PutMapping("/{id}/avatar")
-    public ResponseEntity<ResponseBody> uploadAvatar(@PathVariable("id") long userId,
-                                                     @RequestParam("file") MultipartFile file) throws IOException {
-        log.info("Trying to set avatar: name: {}, size: {}", file.getOriginalFilename(), file.getSize());
-        if (file.isEmpty()) {
-            ResponseBody badRequestResponseBody = ResponseBody.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .message("Avatar file not attached")
-                    .build();
-            return ResponseEntity.badRequest().body(badRequestResponseBody);
-        }
-        userService.setUserAvatar(file, userId);
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .message("Avatar successfully uploaded")
-                .build();
-        return ResponseEntity.ok().body(responseBody);
     }
 
     @GetMapping("/{id}/avatar")

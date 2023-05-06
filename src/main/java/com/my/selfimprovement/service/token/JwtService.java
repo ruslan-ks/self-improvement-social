@@ -5,6 +5,9 @@ import org.springframework.security.core.Authentication;
 import java.time.Instant;
 
 public interface JwtService {
+    String CLAIM_SCOPE = "scope";
+    String CLAIM_USER_ID = "userId";
+
     String generateToken(Authentication authentication);
     Instant getExpiration(String jwt);
 }
