@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 @Service
@@ -30,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private final UserValidator userValidator;
 
     private final FileService fileService;
+
+    private static final Set<MediaType> allowedAvatarMediaTypes = Set.of(MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG);
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -55,8 +59,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setUserAvatar(MultipartFile file, long userId) {
-        String fileName = fileService.saveToUploads(file, userId);
+    public void setUserAvatar(MultipartFile file, long userId) throws IOException {
+        String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
         User user = findByIdOrElseThrow(userId);
         try {
             String oldAvatarFileName = user.getAvatarFileName();

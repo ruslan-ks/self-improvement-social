@@ -30,7 +30,7 @@ public interface UserService {
      * @param file name of file to be set
      * @param userId user id
      */
-    void setUserAvatar(MultipartFile file, long userId);
+    void setUserAvatar(MultipartFile file, long userId) throws IOException;
 
     LoadedFile getUserAvatar(long userId) throws IOException;
 
