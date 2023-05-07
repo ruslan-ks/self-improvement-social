@@ -3,6 +3,7 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.exception.IllegalMediaTypeException;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public interface FileService {
      * (if {@code isMimeTypeAllowed} returns {@code false} for extracted media type)
      * or if media type obtained from file name differs from the one obtained from file metadata
      */
+    @PreAuthorize("isAuthenticated()")
     String saveToUploads(MultipartFile file, long userId, Predicate<MediaType> isMediaTypeAllowed) throws IOException;
 
     /**
@@ -28,6 +30,7 @@ public interface FileService {
      * @param fileName file to be removed
      * the file
      */
+    @PreAuthorize("isAuthenticated()")
     void removeFromUploads(String fileName) throws IOException;
 
     LoadedFile getLoadedFile(String fileName) throws IOException;
