@@ -89,7 +89,7 @@ public class UsersController {
 
     @GetMapping("/{id}/avatar")
     public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) throws IOException {
-        LoadedFile avatarLoadedFile = userService.getUserAvatar(userId);
+        LoadedFile avatarLoadedFile = userService.getAvatar(userId);
         Resource avatarResource = new ByteArrayResource(avatarLoadedFile.getBytes());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");

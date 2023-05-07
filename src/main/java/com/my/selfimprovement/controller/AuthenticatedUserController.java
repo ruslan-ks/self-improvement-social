@@ -35,7 +35,7 @@ public class AuthenticatedUserController {
         }
 
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
-        userService.setUserAvatar(file, userId);
+        userService.setAvatar(file, userId);
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
                 .message("Avatar successfully uploaded")

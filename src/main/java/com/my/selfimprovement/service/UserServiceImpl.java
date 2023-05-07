@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setUserAvatar(MultipartFile file, long userId) throws IOException {
+    public void setAvatar(MultipartFile file, long userId) throws IOException {
         String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
         User user = findByIdOrElseThrow(userId);
         try {
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoadedFile getUserAvatar(long userId) throws IOException {
+    public LoadedFile getAvatar(long userId) throws IOException {
         User user = findByIdOrElseThrow(userId);
         String avatarFileName = user.getAvatarFileName();
         return fileService.getLoadedFile(avatarFileName);
