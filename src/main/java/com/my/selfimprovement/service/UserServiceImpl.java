@@ -6,6 +6,7 @@ import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -76,10 +77,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoadedFile getAvatar(long userId) throws IOException {
+    public Optional<LoadedFile> getAvatar(long userId) {
         User user = findByIdOrElseThrow(userId);
-        String avatarFileName = user.getAvatarFileName();
-        return fileService.getLoadedFile(avatarFileName);
+        return Optional.ofNullable(user.getAvatarFileName())
+                .map(this::getLoadedFileSneaky);
+    }
+
+    @SneakyThrows
+    private LoadedFile getLoadedFileSneaky(String fileName) {
+        return fileService.getLoadedFile(fileName);
     }
 
     @Override

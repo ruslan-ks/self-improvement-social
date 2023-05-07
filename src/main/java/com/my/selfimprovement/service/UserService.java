@@ -34,7 +34,7 @@ public interface UserService {
     @PreAuthorize("isAuthenticated()")
     void setAvatar(MultipartFile file, long userId) throws IOException;
 
-    LoadedFile getAvatar(long userId) throws IOException;
+    Optional<LoadedFile> getAvatar(long userId) throws IOException;
 
     @PreAuthorize("isAuthenticated()")
     void removeAvatar(long userId) throws IOException;

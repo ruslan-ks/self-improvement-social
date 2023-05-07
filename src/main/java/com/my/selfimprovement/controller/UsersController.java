@@ -11,6 +11,7 @@ import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.core.io.ByteArrayResource;
@@ -29,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -89,13 +91,19 @@ public class UsersController {
 
     @GetMapping("/{id}/avatar")
     public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) throws IOException {
-        LoadedFile avatarLoadedFile = userService.getAvatar(userId);
-        Resource avatarResource = new ByteArrayResource(avatarLoadedFile.getBytes());
+        Optional<LoadedFile> avatarLoadedFile = userService.getAvatar(userId);
+        return avatarLoadedFile.map(this::buildFileResponseEntity)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @SneakyThrows
+    private ResponseEntity<Resource> buildFileResponseEntity(LoadedFile file) {
+        Resource avatarResource = new ByteArrayResource(file.getBytes());
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");
         return ResponseEntity.ok()
                 .headers(headers)
-                .contentType(getMediaType(avatarLoadedFile.getPath()))
+                .contentType(getMediaType(file.getPath()))
                 .body(avatarResource);
     }
 
