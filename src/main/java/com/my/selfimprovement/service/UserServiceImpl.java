@@ -3,6 +3,7 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
 import com.my.selfimprovement.util.LoadedFile;
+import com.my.selfimprovement.util.exception.UserNotFoundException;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found. User id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
     }
 
 }
