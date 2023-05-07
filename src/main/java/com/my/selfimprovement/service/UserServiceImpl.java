@@ -3,9 +3,11 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
 import com.my.selfimprovement.util.LoadedFile;
+import com.my.selfimprovement.util.exception.UserNotFoundException;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -15,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void setUserAvatar(MultipartFile file, long userId) throws IOException {
+    public void setAvatar(MultipartFile file, long userId) throws IOException {
         String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
         User user = findByIdOrElseThrow(userId);
         try {
@@ -76,15 +77,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoadedFile getUserAvatar(long userId) throws IOException {
+    public Optional<LoadedFile> getAvatar(long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return Optional.ofNullable(user.getAvatarFileName())
+                .map(this::getLoadedFileSneaky);
+    }
+
+    @SneakyThrows
+    private LoadedFile getLoadedFileSneaky(String fileName) {
+        return fileService.getLoadedFile(fileName);
+    }
+
+    @Override
+    @Transactional
+    public void removeAvatar(long userId) throws IOException {
         User user = findByIdOrElseThrow(userId);
         String avatarFileName = user.getAvatarFileName();
-        return fileService.getLoadedFile(avatarFileName);
+        if (avatarFileName != null) {
+            fileService.removeFromUploads(avatarFileName);
+            user.setAvatarFileName(null);
+        }
     }
 
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found. User id: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
     }
 
 }

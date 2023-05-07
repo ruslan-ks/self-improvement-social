@@ -4,6 +4,7 @@ import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.util.LoadedFile;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,8 +31,12 @@ public interface UserService {
      * @param file name of file to be set
      * @param userId user id
      */
-    void setUserAvatar(MultipartFile file, long userId) throws IOException;
+    @PreAuthorize("isAuthenticated()")
+    void setAvatar(MultipartFile file, long userId) throws IOException;
 
-    LoadedFile getUserAvatar(long userId) throws IOException;
+    Optional<LoadedFile> getAvatar(long userId) throws IOException;
+
+    @PreAuthorize("isAuthenticated()")
+    void removeAvatar(long userId) throws IOException;
 
 }

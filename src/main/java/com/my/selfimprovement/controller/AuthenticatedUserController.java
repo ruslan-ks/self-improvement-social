@@ -35,10 +35,21 @@ public class AuthenticatedUserController {
         }
 
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
-        userService.setUserAvatar(file, userId);
+        userService.setAvatar(file, userId);
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
                 .message("Avatar successfully uploaded")
+                .build();
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @DeleteMapping("/avatar")
+    public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) throws IOException {
+        long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
+        userService.removeAvatar(userId);
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .message("Avatar successfully deleted")
                 .build();
         return ResponseEntity.ok().body(responseBody);
     }

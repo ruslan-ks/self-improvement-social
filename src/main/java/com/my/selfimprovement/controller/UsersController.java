@@ -7,28 +7,25 @@ import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
+import com.my.selfimprovement.util.HttpUtils;
 import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -89,18 +86,9 @@ public class UsersController {
 
     @GetMapping("/{id}/avatar")
     public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) throws IOException {
-        LoadedFile avatarLoadedFile = userService.getUserAvatar(userId);
-        Resource avatarResource = new ByteArrayResource(avatarLoadedFile.getBytes());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline");
-        return ResponseEntity.ok()
-                .headers(headers)
-                .contentType(getMediaType(avatarLoadedFile.getPath()))
-                .body(avatarResource);
-    }
-
-    private MediaType getMediaType(Path filePath) throws IOException {
-        return MediaType.parseMediaType(Files.probeContentType(filePath));
+        Optional<LoadedFile> avatarLoadedFile = userService.getAvatar(userId);
+        return avatarLoadedFile.map(HttpUtils::buildInlineFileResponse)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }
