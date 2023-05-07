@@ -82,6 +82,17 @@ public class UserServiceImpl implements UserService {
         return fileService.getLoadedFile(avatarFileName);
     }
 
+    @Override
+    @Transactional
+    public void removeAvatar(long userId) throws IOException {
+        User user = findByIdOrElseThrow(userId);
+        String avatarFileName = user.getAvatarFileName();
+        if (avatarFileName != null) {
+            fileService.removeFromUploads(avatarFileName);
+            user.setAvatarFileName(null);
+        }
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found. User id: " + userId));

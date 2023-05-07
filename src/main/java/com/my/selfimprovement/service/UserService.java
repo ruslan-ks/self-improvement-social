@@ -36,4 +36,7 @@ public interface UserService {
 
     LoadedFile getAvatar(long userId) throws IOException;
 
+    @PreAuthorize("isAuthenticated()")
+    void removeAvatar(long userId) throws IOException;
+
 }
