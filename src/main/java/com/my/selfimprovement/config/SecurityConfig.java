@@ -2,7 +2,7 @@ package com.my.selfimprovement.config;
 
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.security.RsaKeyProperties;
-import com.my.selfimprovement.security.UserDetailsServiceImpl;
+import com.my.selfimprovement.security.SpringUserDetailsServiceImpl;
 import com.my.selfimprovement.service.UserService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -59,7 +59,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
-        return new UserDetailsServiceImpl(userService);
+        return new SpringUserDetailsServiceImpl(userService);
     }
 
     @Bean

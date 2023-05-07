@@ -1,6 +1,6 @@
 package com.my.selfimprovement.service.token;
 
-import com.my.selfimprovement.security.UserDetailsImpl;
+import com.my.selfimprovement.security.SpringUserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +28,7 @@ public class SpringSecurityJwtService implements JwtService {
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
-        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+        SpringUserDetailsImpl principal = (SpringUserDetailsImpl) authentication.getPrincipal();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self-improvement-social")
                 .issuedAt(now)

@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 @Validated
 @RequiredArgsConstructor
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class SpringDataUserService implements UserService {
 
     private final UserRepository userRepository;
 
