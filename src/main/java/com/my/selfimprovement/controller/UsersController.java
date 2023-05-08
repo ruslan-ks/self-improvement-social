@@ -8,7 +8,6 @@ import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.util.HttpUtils;
-import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -85,9 +82,9 @@ public class UsersController {
     }
 
     @GetMapping("/{id}/avatar")
-    public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) throws IOException {
-        Optional<LoadedFile> avatarLoadedFile = userService.getAvatar(userId);
-        return avatarLoadedFile.map(HttpUtils::buildInlineFileResponse)
+    public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) {
+        return userService.getAvatar(userId)
+                .map(HttpUtils::buildInlineFileResponse)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 

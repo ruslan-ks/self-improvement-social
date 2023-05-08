@@ -1,6 +1,7 @@
 package com.my.selfimprovement.util;
 
 import lombok.Data;
+import org.springframework.http.MediaType;
 
 import java.nio.file.Path;
 
@@ -11,4 +12,5 @@ import java.nio.file.Path;
 public class LoadedFile {
     private final Path path;
     private final byte[] bytes;
+    private final MediaType mediaType;
 }

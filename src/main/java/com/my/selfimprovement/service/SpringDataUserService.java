@@ -7,7 +7,6 @@ import com.my.selfimprovement.util.exception.UserNotFoundException;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -60,9 +59,9 @@ public class SpringDataUserService implements UserService {
 
     @Override
     @Transactional
-    public void setAvatar(MultipartFile file, long userId) throws IOException {
-        String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
+    public void setAvatar(MultipartFile file, long userId) {
         User user = findByIdOrElseThrow(userId);
+        String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
         try {
             String oldAvatarFileName = user.getAvatarFileName();
             user.setAvatarFileName(fileName);
@@ -80,23 +79,19 @@ public class SpringDataUserService implements UserService {
     public Optional<LoadedFile> getAvatar(long userId) {
         User user = findByIdOrElseThrow(userId);
         return Optional.ofNullable(user.getAvatarFileName())
-                .map(this::getLoadedFileSneaky);
-    }
-
-    @SneakyThrows
-    private LoadedFile getLoadedFileSneaky(String fileName) {
-        return fileService.getLoadedFile(fileName);
+                .map(fileService::getLoadedFile);
     }
 
     @Override
     @Transactional
-    public void removeAvatar(long userId) throws IOException {
+    public void removeAvatar(long userId) {
         User user = findByIdOrElseThrow(userId);
         String avatarFileName = user.getAvatarFileName();
-        if (avatarFileName != null) {
-            fileService.removeFromUploads(avatarFileName);
-            user.setAvatarFileName(null);
+        if (avatarFileName == null) {
+            throw new NoSuchElementException("User with id " + userId + " has no avatar");
         }
+        fileService.removeFromUploads(avatarFileName);
+        user.setAvatarFileName(null);
     }
 
     private User findByIdOrElseThrow(long userId) {

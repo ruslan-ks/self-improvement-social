@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.exception;
 
-public class IllegalMediaTypeException extends RuntimeException {
+public class IllegalMediaTypeException extends FileException {
 
     public IllegalMediaTypeException() {
         super();

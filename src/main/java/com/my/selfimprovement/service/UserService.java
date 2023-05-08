@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public interface UserService {
@@ -30,13 +30,32 @@ public interface UserService {
      * Saves {@code file} and assigns file name to user avatar field
      * @param file name of file to be set
      * @param userId user id
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
+     * @throws com.my.selfimprovement.util.exception.FileException if file cannot be saved as defined
+     * by {@link FileService#saveToUploads(MultipartFile, long, Predicate)}
      */
     @PreAuthorize("isAuthenticated()")
-    void setAvatar(MultipartFile file, long userId) throws IOException;
+    void setAvatar(MultipartFile file, long userId);
 
-    Optional<LoadedFile> getAvatar(long userId) throws IOException;
+    /**
+     * Returns user avatar LoadedFile if one is present
+     * @param userId user id
+     * @return Optional containing LoadedFile which represents user avatar
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
+     * @throws com.my.selfimprovement.util.exception.FileException if file cannot be read as defined
+     * by {@link FileService#getLoadedFile(String)}
+     */
+    Optional<LoadedFile> getAvatar(long userId);
 
+    /**
+     * Removes avatar if one is present
+     * @param userId user id
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
+     * @throws java.util.NoSuchElementException if user.avatar is null
+     * @throws com.my.selfimprovement.util.exception.FileException if file cannot be removed as defined
+     * by {@link FileService#removeFromUploads(String)}
+     */
     @PreAuthorize("isAuthenticated()")
-    void removeAvatar(long userId) throws IOException;
+    void removeAvatar(long userId);
 
 }
