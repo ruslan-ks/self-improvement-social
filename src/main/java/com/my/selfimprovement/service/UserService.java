@@ -30,6 +30,8 @@ public interface UserService {
 
     long count();
 
+    Optional<User> findById(long userId);
+
     /**
      * Saves {@code file} and assigns file name to user avatar field
      * @param file name of file to be set

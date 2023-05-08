@@ -73,6 +73,11 @@ public class SpringDataUserService implements UserService {
     }
 
     @Override
+    public Optional<User> findById(long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
     @Transactional
     public void setAvatar(MultipartFile file, long userId) {
         User user = findByIdOrElseThrow(userId);
