@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/user")
@@ -45,7 +46,12 @@ public class AuthenticatedUserController {
     @DeleteMapping("/avatar")
     public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
-        userService.removeAvatar(userId);
+        try {
+            userService.removeAvatar(userId);
+        } catch (NoSuchElementException ex) {
+            return ResponseEntity.notFound().build();
+        }
+
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
                 .message("Avatar successfully deleted")
