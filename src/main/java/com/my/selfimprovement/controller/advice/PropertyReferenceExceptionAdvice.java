@@ -14,7 +14,7 @@ public class PropertyReferenceExceptionAdvice {
     public ResponseEntity<ResponseBody> handlePropertyReferenceException(PropertyReferenceException ex) {
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .message(ex.getMessage())
+                .developerMessage(ex.getMessage())
                 .build();
         return ResponseEntity.badRequest().body(responseBody);
     }

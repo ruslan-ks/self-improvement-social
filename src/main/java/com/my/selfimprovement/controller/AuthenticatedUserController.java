@@ -5,6 +5,9 @@ import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,22 +26,29 @@ public class AuthenticatedUserController {
 
     private final UserService userService;
 
+    @Autowired
+    private final MessageSource messageSource;
+
     @PutMapping("/avatar")
     public ResponseEntity<ResponseBody> uploadAvatar(@RequestParam("file") MultipartFile file,
                                                      @AuthenticationPrincipal Jwt jwt) {
         if (file.isEmpty()) {
+            String message = messageSource.getMessage("user.avatar.notAttached", null,
+                    LocaleContextHolder.getLocale());
             ResponseBody badRequestResponseBody = ResponseBody.builder()
                     .status(HttpStatus.BAD_REQUEST)
-                    .message("Avatar file not attached")
+                    .message(message)
                     .build();
             return ResponseEntity.badRequest().body(badRequestResponseBody);
         }
 
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         userService.setAvatar(file, userId);
+        String message = messageSource.getMessage("user.avatar.uploaded", null,
+                LocaleContextHolder.getLocale());
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
-                .message("Avatar successfully uploaded")
+                .message(message)
                 .build();
         return ResponseEntity.ok().body(responseBody);
     }
@@ -52,9 +62,11 @@ public class AuthenticatedUserController {
             return ResponseEntity.notFound().build();
         }
 
+        String message = messageSource.getMessage("user.avatar.deleted", null,
+                LocaleContextHolder.getLocale());
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
-                .message("Avatar successfully deleted")
+                .message(message)
                 .build();
         return ResponseEntity.ok().body(responseBody);
     }

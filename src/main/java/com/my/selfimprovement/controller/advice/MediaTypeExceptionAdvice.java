@@ -15,7 +15,7 @@ public class MediaTypeExceptionAdvice {
     public ResponseEntity<ResponseBody> handeIllegalMediaTypeException(RuntimeException ex) {
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .message(ex.getMessage())
+                .developerMessage(ex.getMessage())
                 .build();
         return ResponseEntity.badRequest().body(responseBody);
     }

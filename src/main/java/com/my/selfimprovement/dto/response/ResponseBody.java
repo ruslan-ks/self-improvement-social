@@ -14,22 +14,21 @@ import java.util.Optional;
 public class ResponseBody {
 
     @Builder
-    public ResponseBody(Instant timestamp, HttpStatus status, String message, Map<?, ?> data) {
+    public ResponseBody(Instant timestamp, HttpStatus status, String message, String developerMessage,
+                        Map<?, ?> data) {
         this.timestamp = Optional.ofNullable(timestamp).orElseGet(Instant::now);
         this.status = status;
         this.message = message;
+        this.developerMessage = developerMessage;
         this.data = data;
         this.statusCode = status.value();
     }
 
     protected Instant timestamp;
-
     protected HttpStatus status;
-
     protected int statusCode;
-
     protected String message;
-
+    protected String developerMessage;
     protected Map<?, ?> data;
 
 }

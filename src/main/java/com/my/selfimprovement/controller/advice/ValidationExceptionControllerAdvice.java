@@ -2,7 +2,11 @@ package com.my.selfimprovement.controller.advice;
 
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.util.exception.ControllerValidationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,8 +20,12 @@ import java.util.Map;
  * Handles exceptions thrown by <strong>controller level validators</strong> and returns corresponding response.
  */
 @ControllerAdvice
+@RequiredArgsConstructor
 @Slf4j
 public class ValidationExceptionControllerAdvice {
+
+    @Autowired
+    private final MessageSource messageSource;
 
     /**
      * Handles exceptions thrown by <strong>Spring</strong> validation
@@ -54,9 +62,11 @@ public class ValidationExceptionControllerAdvice {
     }
 
     private ResponseBody validationFailResponseBody(Map<String, String> errors) {
+        String validationFailureMsg = messageSource.getMessage("validation.fail", null,
+                LocaleContextHolder.getLocale());
         return ResponseBody.builder()
                 .status(HttpStatus.BAD_REQUEST)
-                .message("Validation failed")
+                .message(validationFailureMsg)
                 .data(Map.of("errors", errors))
                 .build();
     }
