@@ -81,6 +81,22 @@ public class UsersController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseBody> getUserById(@PathVariable("id") long userId) {
+        return userService.findById(userId)
+                .map(userMapper::toDetailedUserResponse)
+                .map(this::buildDetailedUserResponse)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    private ResponseEntity<ResponseBody> buildDetailedUserResponse(DetailedUserResponse user) {
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("user", user))
+                .build();
+        return ResponseEntity.ok().body(responseBody);
+    }
+
     @GetMapping("/{id}/avatar")
     public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) {
         return userService.getAvatar(userId)
