@@ -19,6 +19,7 @@ All the responses issued by this REST API have similar structure represented by
 - status
 - statusCode
 - message
+- developerMessage
 - data
 
 Where *data* is of type Map and contains any data that is a request result.
