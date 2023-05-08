@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -25,7 +24,7 @@ public class AuthenticatedUserController {
 
     @PutMapping("/avatar")
     public ResponseEntity<ResponseBody> uploadAvatar(@RequestParam("file") MultipartFile file,
-                                                     @AuthenticationPrincipal Jwt jwt) throws IOException {
+                                                     @AuthenticationPrincipal Jwt jwt) {
         if (file.isEmpty()) {
             ResponseBody badRequestResponseBody = ResponseBody.builder()
                     .status(HttpStatus.BAD_REQUEST)
@@ -44,7 +43,7 @@ public class AuthenticatedUserController {
     }
 
     @DeleteMapping("/avatar")
-    public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) throws IOException {
+    public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         userService.removeAvatar(userId);
         ResponseBody responseBody = ResponseBody.builder()

@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util;
 
-import lombok.SneakyThrows;
+import com.my.selfimprovement.util.exception.FileException;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +15,6 @@ public class HttpUtils {
 
     private HttpUtils() {}
 
-    @SneakyThrows
     public static ResponseEntity<Resource> buildInlineFileResponse(LoadedFile file) {
         Resource avatarResource = new ByteArrayResource(file.getBytes());
         HttpHeaders headers = new HttpHeaders();
@@ -26,8 +25,18 @@ public class HttpUtils {
                 .body(avatarResource);
     }
 
-    public static MediaType getMediaType(Path filePath) throws IOException {
-        return MediaType.parseMediaType(Files.probeContentType(filePath));
+    /**
+     * Returns file MediaType based on file name
+     * @param filePath file path
+     * @return MediaType defined by file name
+     * @throws FileException if IOException occurs
+     */
+    public static MediaType getMediaType(Path filePath) {
+        try {
+            return MediaType.parseMediaType(Files.probeContentType(filePath));
+        } catch (IOException ex) {
+            throw new FileException("Failed to parse media type. IOException occurred", ex);
+        }
     }
 
 }
