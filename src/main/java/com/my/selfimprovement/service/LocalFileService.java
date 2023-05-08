@@ -94,7 +94,8 @@ public class LocalFileService implements FileService {
     public LoadedFile getLoadedFile(String fileName) {
         Path filePath = Paths.get(filesUploadDir, fileName);
         try {
-            return new LoadedFile(filePath, Files.readAllBytes(filePath));
+            MediaType mediaType = MediaType.parseMediaType(Files.probeContentType(filePath));
+            return new LoadedFile(filePath, Files.readAllBytes(filePath), mediaType);
         } catch (IOException ex) {
             throw new FileException("Failed to read file '" + fileName + "' IOException occurred", ex);
         }
