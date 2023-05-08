@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @ToString
-public class UserDetailsImpl implements UserDetails {
+public class SpringUserDetailsImpl implements UserDetails {
 
     @Getter
     private final User user;
