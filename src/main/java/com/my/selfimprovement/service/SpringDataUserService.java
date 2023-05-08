@@ -1,5 +1,8 @@
 package com.my.selfimprovement.service;
 
+import com.my.selfimprovement.dto.mapper.UserMapper;
+import com.my.selfimprovement.dto.request.UserUpdateRequest;
+import com.my.selfimprovement.dto.response.DetailedUserResponse;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
 import com.my.selfimprovement.util.LoadedFile;
@@ -33,6 +36,8 @@ public class SpringDataUserService implements UserService {
 
     private final FileService fileService;
 
+    private final UserMapper userMapper;
+
     private static final Set<MediaType> allowedAvatarMediaTypes = Set.of(MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG);
 
     @Override
@@ -50,6 +55,16 @@ public class SpringDataUserService implements UserService {
     public void save(@Valid User user) {
         userValidator.validate(user);
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public DetailedUserResponse update(long userId, UserUpdateRequest userUpdateRequest) {
+        User user = findByIdOrElseThrow(userId);
+        user.setName(userUpdateRequest.name());
+        user.setSurname(userUpdateRequest.surname());
+        user.setBirthday(userUpdateRequest.birthday());
+        return userMapper.toDetailedUserResponse(user);
     }
 
     @Override

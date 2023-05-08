@@ -1,8 +1,11 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.request.UserUpdateRequest;
+import com.my.selfimprovement.dto.response.DetailedUserResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,20 @@ public class AuthenticatedUserController {
 
     @Autowired
     private final MessageSource messageSource;
+
+    @PatchMapping
+    public ResponseEntity<ResponseBody> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
+                                               @AuthenticationPrincipal Jwt jwt) {
+        long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
+        DetailedUserResponse updatedUser = userService.update(userId, userUpdateRequest);
+        String message = messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("user", updatedUser))
+                .message(message)
+                .build();
+        return ResponseEntity.ok(responseBody);
+    }
 
     @PutMapping("/avatar")
     public ResponseEntity<ResponseBody> uploadAvatar(@RequestParam("file") MultipartFile file,
@@ -69,16 +86,6 @@ public class AuthenticatedUserController {
                 .message(message)
                 .build();
         return ResponseEntity.ok().body(responseBody);
-    }
-
-    @GetMapping("/json")
-    public ResponseEntity<ResponseBody> userData(@AuthenticationPrincipal Jwt jwt) {
-        log.info("GET /user/json: principal jwt claims: {}", jwt.getClaims());
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("username", jwt.getClaim("sub"), "scope", jwt.getClaim("scope")))
-                .build();
-        return ResponseEntity.ok(responseBody);
     }
 
 }
