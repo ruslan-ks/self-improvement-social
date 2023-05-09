@@ -88,10 +88,8 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())    // by default use a bean by the name of corsConfigurationSource
                 .authorizeHttpRequests(authManagerRequestMatcherRegistry -> authManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.GET, USERS_MATCHING).permitAll()
-                        .requestMatchers(HttpMethod.HEAD, USERS_MATCHING).permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, USERS_MATCHING).permitAll()
-                        .requestMatchers(USERS_MATCHING).authenticated()
+                        .requestMatchers(HttpMethod.PUT, USERS_MATCHING).authenticated()
+                        .requestMatchers(HttpMethod.PATCH, USERS_MATCHING).authenticated()
                         .requestMatchers("/root/**").hasRole(User.Role.ROOT.name())
                         .requestMatchers("/admin/**").hasAnyRole(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/login").anonymous()
