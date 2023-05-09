@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -48,6 +49,8 @@ public class SecurityConfig {
     private String clientOrigin;
 
     private final RsaKeyProperties rsaKeys;
+
+    private static final String USERS_MATCHING = "/users/**";
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
@@ -85,9 +88,12 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())    // by default use a bean by the name of corsConfigurationSource
                 .authorizeHttpRequests(authManagerRequestMatcherRegistry -> authManagerRequestMatcherRegistry
+                        .requestMatchers(HttpMethod.GET, USERS_MATCHING).permitAll()
+                        .requestMatchers(HttpMethod.HEAD, USERS_MATCHING).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, USERS_MATCHING).permitAll()
+                        .requestMatchers(USERS_MATCHING).authenticated()
                         .requestMatchers("/root/**").hasRole(User.Role.ROOT.name())
                         .requestMatchers("/admin/**").hasAnyRole(User.Role.ADMIN.name(), User.Role.ROOT.name())
-                        .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
                 )
