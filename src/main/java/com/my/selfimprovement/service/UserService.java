@@ -65,4 +65,6 @@ public interface UserService {
 
     long getFollowersCount(long userId);
 
+    Stream<User> getFollowersPage(long userId, Pageable pageable);
+
 }
