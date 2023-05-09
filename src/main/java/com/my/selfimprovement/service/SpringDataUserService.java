@@ -110,6 +110,58 @@ public class SpringDataUserService implements UserService {
         user.setAvatarFileName(null);
     }
 
+    @Override
+    public long getFollowersCount(long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return user.getFollowers().size();
+    }
+
+    @Override
+    public Stream<User> getFollowersPage(long userId, Pageable pageable) {
+        User user = findByIdOrElseThrow(userId);
+        return userRepository.findByFollowingsContaining(user, pageable).stream();
+    }
+
+    @Override
+    public long getFollowingsCount(long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return user.getFollowings().size();
+    }
+
+    @Override
+    public Stream<User> getFollowingsPage(long userId, Pageable pageable) {
+        User user = findByIdOrElseThrow(userId);
+        return userRepository.findByFollowersContaining(user, pageable).stream();
+    }
+
+    @Override
+    @Transactional
+    public void addFollower(long userId, long newFollowerId) {
+        if (userId == newFollowerId) {
+            throw new IllegalArgumentException("Cannot add follower: illegal args: userId == newFollowerId: " +
+                    userId);
+        }
+        User user = findByIdOrElseThrow(userId);
+        User newFollower = findByIdOrElseThrow(newFollowerId);
+        user.addFollower(newFollower);
+    }
+
+    @Override
+    @Transactional
+    public void removeFollower(long userId, long followerId) {
+        if (userId == followerId) {
+            throw new IllegalArgumentException("Cannot remove follower: illegal args: " + "userId == followerId: " +
+                    userId);
+        }
+        User user = findByIdOrElseThrow(userId);
+        User followerToRemove = findByIdOrElseThrow(followerId);
+        boolean removed = user.removeFollower(followerToRemove);
+        if (!removed) {
+            throw new NoSuchElementException("Cannot remove follower. User with id " + followerId +
+                    " is not subscribed to user with id " + userId);
+        }
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));

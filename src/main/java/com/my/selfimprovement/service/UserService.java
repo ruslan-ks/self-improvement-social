@@ -63,4 +63,29 @@ public interface UserService {
     @PreAuthorize("isAuthenticated()")
     void removeAvatar(long userId);
 
+    long getFollowersCount(long userId);
+
+    Stream<User> getFollowersPage(long userId, Pageable pageable);
+
+    long getFollowingsCount(long userId);
+
+    Stream<User> getFollowingsPage(long userId, Pageable pageable);
+
+    /**
+     * Adds following to user followings
+     * @param userId user
+     * @param newFollowerId follower to be added
+     * @throws IllegalArgumentException if userId == newFollowerId
+     */
+    void addFollower(long userId, long newFollowerId);
+
+    /**
+     * Removes user with id {@code userId} from followers of user with id {@code followerId}
+     * @param userId user id
+     * @param followerId follower to be removed id
+     * @throws IllegalArgumentException if userId == followerId
+     * @throws java.util.NoSuchElementException if user has no such following
+     */
+    void removeFollower(long userId, long followerId);
+
 }
