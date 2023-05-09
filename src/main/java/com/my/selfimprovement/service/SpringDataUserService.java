@@ -136,14 +136,14 @@ public class SpringDataUserService implements UserService {
 
     @Override
     @Transactional
-    public void addFollowing(long userId, long newFollowingUserId) {
-        if (userId == newFollowingUserId) {
-            throw new IllegalArgumentException("Cannot add following: illegal args: userId == newFollowingUserId: " +
+    public void addFollower(long userId, long newFollowerId) {
+        if (userId == newFollowerId) {
+            throw new IllegalArgumentException("Cannot add follower: illegal args: userId == newFollowerId: " +
                     userId);
         }
         User user = findByIdOrElseThrow(userId);
-        User userToBeFollowed = findByIdOrElseThrow(newFollowingUserId);
-        user.addFollowing(userToBeFollowed);
+        User newFollower = findByIdOrElseThrow(newFollowerId);
+        user.addFollower(newFollower);
     }
 
     @Override

@@ -74,10 +74,10 @@ public interface UserService {
     /**
      * Adds following to user followings
      * @param userId user
-     * @param newFollowingUserId following to be added
-     * @throws IllegalArgumentException if userId == newFollowingUserId
+     * @param newFollowerId follower to be added
+     * @throws IllegalArgumentException if userId == newFollowerId
      */
-    void addFollowing(long userId, long newFollowingUserId);
+    void addFollower(long userId, long newFollowerId);
 
     /**
      * Removes user with id {@code userId} from followers of user with id {@code followerId}
