@@ -122,6 +122,12 @@ public class SpringDataUserService implements UserService {
         return userRepository.findByFollowingsContaining(user, pageable).stream();
     }
 
+    @Override
+    public long getFollowingsCount(long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return user.getFollowings().size();
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
