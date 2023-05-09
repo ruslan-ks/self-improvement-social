@@ -29,4 +29,20 @@ public class HttpUtils {
         return ResponseEntity.ok(responseBody);
     }
 
+    public static ResponseEntity<ResponseBody> badRequest(String developerMessage) {
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .developerMessage(developerMessage)
+                .build();
+        return ResponseEntity.badRequest().body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseBody> notFound(String developerMessage) {
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.NOT_FOUND)
+                .developerMessage(developerMessage)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+    }
+
 }

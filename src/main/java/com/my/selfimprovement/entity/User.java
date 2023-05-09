@@ -155,6 +155,10 @@ public class User implements Serializable {
         followings.add(other);
     }
 
+    public boolean removeFollower(User other) {
+        return followers.removeIf(u -> u.getId() == other.getId());
+    }
+
     public void addFollower(User other) {
         followers.add(other);
     }

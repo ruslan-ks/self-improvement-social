@@ -146,6 +146,22 @@ public class SpringDataUserService implements UserService {
         user.addFollowing(userToBeFollowed);
     }
 
+    @Override
+    @Transactional
+    public void removeFollower(long userId, long followerId) {
+        if (userId == followerId) {
+            throw new IllegalArgumentException("Cannot remove follower: illegal args: " + "userId == followerId: " +
+                    userId);
+        }
+        User user = findByIdOrElseThrow(userId);
+        User followerToRemove = findByIdOrElseThrow(followerId);
+        boolean removed = user.removeFollower(followerToRemove);
+        if (!removed) {
+            throw new NoSuchElementException("Cannot remove follower. User with id " + followerId +
+                    " is not subscribed to user with id " + userId);
+        }
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));

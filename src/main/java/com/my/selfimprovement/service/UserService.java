@@ -79,4 +79,13 @@ public interface UserService {
      */
     void addFollowing(long userId, long newFollowingUserId);
 
+    /**
+     * Removes user with id {@code userId} from followers of user with id {@code followerId}
+     * @param userId user id
+     * @param followerId follower to be removed id
+     * @throws IllegalArgumentException if userId == followerId
+     * @throws java.util.NoSuchElementException if user has no such following
+     */
+    void removeFollower(long userId, long followerId);
+
 }

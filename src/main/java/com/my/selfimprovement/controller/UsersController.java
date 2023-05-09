@@ -11,6 +11,7 @@ import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -229,6 +230,21 @@ public class UsersController {
             return ResponseEntity.badRequest().body(responseBody);
         }
         String message = messageSource.getMessage("user.following.added", null,
+                LocaleContextHolder.getLocale());
+        return HttpUtils.ok(message);
+    }
+
+    @Operation(summary = "Delete currently logged in user from followers of user with id {userId}")
+    @DeleteMapping("/{userId}/followers")
+    public ResponseEntity<ResponseBody> deleteFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {
+        try {
+            userService.removeFollower(userId, jwt.getClaim(JwtService.CLAIM_USER_ID));
+        } catch (IllegalArgumentException ex) {
+            return HttpUtils.badRequest(ex.getMessage());
+        } catch (NoSuchElementException ex) {
+            return HttpUtils.notFound(ex.getMessage());
+        }
+        String message = messageSource.getMessage("user.following.removed", null,
                 LocaleContextHolder.getLocale());
         return HttpUtils.ok(message);
     }
