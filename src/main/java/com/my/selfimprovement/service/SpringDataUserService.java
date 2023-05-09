@@ -134,6 +134,18 @@ public class SpringDataUserService implements UserService {
         return userRepository.findByFollowersContaining(user, pageable).stream();
     }
 
+    @Override
+    @Transactional
+    public void addFollowing(long userId, long newFollowingUserId) {
+        if (userId == newFollowingUserId) {
+            throw new IllegalArgumentException("Cannot add following: illegal args: userId == newFollowingUserId: " +
+                    userId);
+        }
+        User user = findByIdOrElseThrow(userId);
+        User userToBeFollowed = findByIdOrElseThrow(newFollowingUserId);
+        user.addFollowing(userToBeFollowed);
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));

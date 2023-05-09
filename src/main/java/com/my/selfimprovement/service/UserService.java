@@ -71,4 +71,12 @@ public interface UserService {
 
     Stream<User> getFollowingsPage(long userId, Pageable pageable);
 
+    /**
+     * Adds following to user followings
+     * @param userId user
+     * @param newFollowingUserId following to be added
+     * @throws IllegalArgumentException if userId == newFollowingUserId
+     */
+    void addFollowing(long userId, long newFollowingUserId);
+
 }

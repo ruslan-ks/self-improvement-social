@@ -216,4 +216,21 @@ public class UsersController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @PutMapping("/{userId}/followers")
+    public ResponseEntity<ResponseBody> addFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {
+        try {
+            userService.addFollowing(jwt.getClaim(JwtService.CLAIM_USER_ID), userId);
+        } catch (IllegalArgumentException ex) {
+            log.warn("Cannot add following: {}", ex.getMessage());
+            ResponseBody responseBody = ResponseBody.builder()
+                    .status(HttpStatus.BAD_REQUEST)
+                    .developerMessage(ex.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(responseBody);
+        }
+        String message = messageSource.getMessage("user.following.added", null,
+                LocaleContextHolder.getLocale());
+        return HttpUtils.ok(message);
+    }
+
 }
