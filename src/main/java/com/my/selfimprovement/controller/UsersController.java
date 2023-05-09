@@ -203,4 +203,17 @@ public class UsersController {
         return ResponseEntity.ok(responseBody);
     }
 
+
+    @GetMapping("/{userId}/followings")
+    public ResponseEntity<ResponseBody> getFollowingsPage(@PathVariable long userId, Pageable pageable) {
+        List<ShortUserResponse> followings = userService.getFollowingsPage(userId, pageable)
+                .map(userMapper::toShortUserResponse)
+                .toList();
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("followings", followings))
+                .build();
+        return ResponseEntity.ok(responseBody);
+    }
+
 }
