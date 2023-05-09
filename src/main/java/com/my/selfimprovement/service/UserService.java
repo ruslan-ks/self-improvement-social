@@ -1,7 +1,6 @@
 package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
-import com.my.selfimprovement.dto.response.DetailedUserResponse;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.util.LoadedFile;
 import jakarta.validation.Valid;
@@ -26,7 +25,7 @@ public interface UserService {
 
     void save(@Valid User user);
 
-    DetailedUserResponse update(long userId, @Valid UserUpdateRequest userUpdateRequest);
+    User update(long userId, @Valid UserUpdateRequest userUpdateRequest);
 
     long count();
 

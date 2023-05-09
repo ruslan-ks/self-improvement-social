@@ -1,14 +1,15 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.mapper.UserMapper;
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.dto.response.DetailedUserResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -29,18 +30,20 @@ public class AuthenticatedUserController {
 
     private final UserService userService;
 
-    @Autowired
     private final MessageSource messageSource;
+
+    private final UserMapper userMapper;
 
     @PatchMapping
     public ResponseEntity<ResponseBody> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
                                                @AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
-        DetailedUserResponse updatedUser = userService.update(userId, userUpdateRequest);
+        User updatedUser = userService.update(userId, userUpdateRequest);
+        DetailedUserResponse updatedUserResponse = userMapper.toDetailedUserResponse(updatedUser);
         String message = messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
-                .data(Map.of("user", updatedUser))
+                .data(Map.of("user", updatedUserResponse))
                 .message(message)
                 .build();
         return ResponseEntity.ok(responseBody);
