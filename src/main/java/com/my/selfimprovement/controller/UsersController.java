@@ -81,8 +81,8 @@ public class UsersController {
         return ResponseEntity.ok(responseBody);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseBody> getUserById(@PathVariable("id") long userId) {
+    @GetMapping("{id}")
+    public ResponseEntity<ResponseBody> getById(@PathVariable("id") long userId) {
         return userService.findById(userId)
                 .map(userMapper::toDetailedUserResponse)
                 .map(this::buildDetailedUserResponse)
