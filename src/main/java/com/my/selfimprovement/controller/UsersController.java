@@ -171,4 +171,14 @@ public class UsersController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @GetMapping("/{userId}/followers/count")
+    public ResponseEntity<ResponseBody> getFollowersCount(@PathVariable long userId) {
+        long count = userService.getFollowersCount(userId);
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(Map.of("count", count))
+                .build();
+        return ResponseEntity.ok(responseBody);
+    }
+
 }

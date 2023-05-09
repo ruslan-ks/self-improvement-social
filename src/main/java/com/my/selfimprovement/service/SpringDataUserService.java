@@ -110,6 +110,12 @@ public class SpringDataUserService implements UserService {
         user.setAvatarFileName(null);
     }
 
+    @Override
+    public long getFollowersCount(long userId) {
+        User user = findByIdOrElseThrow(userId);
+        return user.getFollowers().size();
+    }
+
     private User findByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));

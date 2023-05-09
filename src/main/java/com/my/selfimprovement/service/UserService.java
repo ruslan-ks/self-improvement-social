@@ -63,4 +63,6 @@ public interface UserService {
     @PreAuthorize("isAuthenticated()")
     void removeAvatar(long userId);
 
+    long getFollowersCount(long userId);
+
 }
