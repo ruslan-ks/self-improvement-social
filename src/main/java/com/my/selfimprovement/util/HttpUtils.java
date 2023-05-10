@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public class HttpUtils {
 
     private HttpUtils() {}
@@ -25,6 +27,14 @@ public class HttpUtils {
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.OK)
                 .message(message)
+                .build();
+        return ResponseEntity.ok(responseBody);
+    }
+
+    public static ResponseEntity<ResponseBody> ok(Map<String, ?> data) {
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.OK)
+                .data(data)
                 .build();
         return ResponseEntity.ok(responseBody);
     }
