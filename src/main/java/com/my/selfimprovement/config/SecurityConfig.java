@@ -51,6 +51,8 @@ public class SecurityConfig {
 
     private static final String USERS_MATCHING = "/users/**";
 
+    private static final String CATEGORIES_MATCHING = "/categories/**";
+
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
         var authProvider = new DaoAuthenticationProvider();
@@ -100,8 +102,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authManagerRequestMatcherRegistry -> authManagerRequestMatcherRegistry
                         .requestMatchers(HttpMethod.PUT, USERS_MATCHING).authenticated()
                         .requestMatchers(HttpMethod.PATCH, USERS_MATCHING).authenticated()
-                        .requestMatchers("/root/**").hasRole(User.Role.ROOT.name())
-                        .requestMatchers("/admin/**").hasAnyRole(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.POST, CATEGORIES_MATCHING)
+                                .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
                 )

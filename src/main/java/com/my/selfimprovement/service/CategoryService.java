@@ -1,13 +1,13 @@
 package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.Category;
-import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryService {
 
-    void save(@Valid Category category);
+    Category create(String categoryName);
 
     /**
      * Removes category
@@ -17,5 +17,7 @@ public interface CategoryService {
     void remove(long categoryId);
 
     List<Category> getAll();
+
+    Optional<Category> getByName(String name);
 
 }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,8 +23,16 @@ public class SpringDataCategoryService implements CategoryService {
 
     @Override
     @Transactional
-    public void save(Category category) {
+    public Category create(String categoryName) {
+        Category category = newCategory(categoryName);
         categoryRepository.save(category);
+        return category;
+    }
+
+    private Category newCategory(String name) {
+        var category = new Category();
+        category.setName(name);
+        return category;
     }
 
     @Override
@@ -35,6 +44,11 @@ public class SpringDataCategoryService implements CategoryService {
     public void remove(long categoryId) {
         Category category = findByIdOrElseThrow(categoryId);
         categoryRepository.delete(category);
+    }
+
+    @Override
+    public Optional<Category> getByName(String name) {
+        return categoryRepository.findByName(name);
     }
 
     private Category findByIdOrElseThrow(long categoryId) {
