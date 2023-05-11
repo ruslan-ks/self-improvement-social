@@ -1,4 +1,4 @@
-package com.my.selfimprovement.util.validation;
+package com.my.selfimprovement.util.validation.abstracts;
 
 import com.my.selfimprovement.util.exception.ControllerValidationException;
 import com.my.selfimprovement.util.exception.ValidationException;
