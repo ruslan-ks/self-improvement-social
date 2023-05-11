@@ -49,9 +49,9 @@ public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
 
-    private static final String USERS_MATCHING = "/users/**";
+    private static final String USERS = "/users/**";
 
-    private static final String CATEGORIES_MATCHING = "/categories/**";
+    private static final String CATEGORIES = "/categories/**";
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
@@ -100,9 +100,11 @@ public class SecurityConfig {
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())    // by default use a bean by the name of corsConfigurationSource
                 .authorizeHttpRequests(authManagerRequestMatcherRegistry -> authManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.PUT, USERS_MATCHING).authenticated()
-                        .requestMatchers(HttpMethod.PATCH, USERS_MATCHING).authenticated()
-                        .requestMatchers(HttpMethod.POST, CATEGORIES_MATCHING)
+                        .requestMatchers(HttpMethod.PUT, USERS).authenticated()
+                        .requestMatchers(HttpMethod.PATCH, USERS).authenticated()
+                        .requestMatchers(HttpMethod.POST, CATEGORIES)
+                                .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.DELETE, CATEGORIES)
                                 .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()

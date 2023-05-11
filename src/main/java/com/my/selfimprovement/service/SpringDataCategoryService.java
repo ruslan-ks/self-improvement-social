@@ -41,6 +41,7 @@ public class SpringDataCategoryService implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void remove(long categoryId) {
         Category category = findByIdOrElseThrow(categoryId);
         categoryRepository.delete(category);
