@@ -35,9 +35,9 @@ CREATE TABLE activities
     name             text NOT NULL
         CONSTRAINT valid_activity_name_length CHECK (length(name) >= 2 AND length(name) <= 256),
     description      text NOT NULL
-        CONSTRAINT valid_activity_title_length CHECK (length(description) >= 2 AND length(description) <= 256),
+        CONSTRAINT valid_activity_description_length CHECK (length(description) >= 2 AND length(description) <= 512),
     minutes_required int  NOT NULL
-        CONSTRAINT positive_activity_minutes_required CHECK (minutes_required > 0),
+        CONSTRAINT positive_activity_minutes_required CHECK (minutes_required > 0 AND minutes_required < 10000),
     author_id        bigint,
     FOREIGN KEY (author_id) REFERENCES users (id)
         ON DELETE SET NULL
