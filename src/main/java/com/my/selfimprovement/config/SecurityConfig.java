@@ -2,7 +2,7 @@ package com.my.selfimprovement.config;
 
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.security.RsaKeyProperties;
-import com.my.selfimprovement.security.SpringUserDetailsServiceImpl;
+import com.my.selfimprovement.security.SpringUserDetailsService;
 import com.my.selfimprovement.service.UserService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -28,10 +28,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -50,7 +49,9 @@ public class SecurityConfig {
 
     private final RsaKeyProperties rsaKeys;
 
-    private static final String USERS_MATCHING = "/users/**";
+    private static final String USERS = "/users/**";
+
+    private static final String CATEGORIES = "/categories/**";
 
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
@@ -62,7 +63,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserService userService) {
-        return new SpringUserDetailsServiceImpl(userService);
+        return new SpringUserDetailsService(userService);
     }
 
     @Bean
@@ -83,15 +84,28 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        // Remove 'SCOPE_' prefix added to principal authorities by JwtGrantedAuthoritiesConverter
+        var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+
+        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(CsrfConfigurer::disable)
                 .cors(Customizer.withDefaults())    // by default use a bean by the name of corsConfigurationSource
                 .authorizeHttpRequests(authManagerRequestMatcherRegistry -> authManagerRequestMatcherRegistry
-                        .requestMatchers(HttpMethod.PUT, USERS_MATCHING).authenticated()
-                        .requestMatchers(HttpMethod.PATCH, USERS_MATCHING).authenticated()
-                        .requestMatchers("/root/**").hasRole(User.Role.ROOT.name())
-                        .requestMatchers("/admin/**").hasAnyRole(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.PUT, USERS).authenticated()
+                        .requestMatchers(HttpMethod.PATCH, USERS).authenticated()
+                        .requestMatchers(HttpMethod.POST, CATEGORIES)
+                                .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.DELETE, CATEGORIES)
+                                .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
                 )

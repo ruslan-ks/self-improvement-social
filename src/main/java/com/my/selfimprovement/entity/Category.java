@@ -1,6 +1,7 @@
 package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,7 +21,8 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
+    @Size(min = 1, max = 128, message = "{valid.category.name.size}")
     private String name;
 
     @ManyToMany
