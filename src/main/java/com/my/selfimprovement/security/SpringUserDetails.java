@@ -13,7 +13,7 @@ import java.util.Collections;
 
 @RequiredArgsConstructor
 @ToString
-public class SpringUserDetailsImpl implements UserDetails {
+public class SpringUserDetails implements UserDetails {
 
     @Getter
     private final User user;
@@ -23,7 +23,7 @@ public class SpringUserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (authorities == null) {
-            authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+            authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
         }
         return authorities;
     }
