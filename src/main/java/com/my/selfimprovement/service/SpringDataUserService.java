@@ -74,6 +74,12 @@ public class SpringDataUserService implements UserService {
     }
 
     @Override
+    public User findByIdOrElseThrow(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
+    }
+
+    @Override
     @Transactional
     public void setAvatar(MultipartFile file, long userId) {
         User user = findByIdOrElseThrow(userId);
@@ -160,11 +166,6 @@ public class SpringDataUserService implements UserService {
             throw new NoSuchElementException("Cannot remove follower. User with id " + followerId +
                     " is not subscribed to user with id " + userId);
         }
-    }
-
-    private User findByIdOrElseThrow(long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
     }
 
 }
