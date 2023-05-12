@@ -43,7 +43,7 @@ public class SpringDataCategoryService implements CategoryService {
     @Override
     @Transactional
     public void remove(long categoryId) {
-        Category category = findByIdOrElseThrow(categoryId);
+        Category category = getByIdOrElseThrow(categoryId);
         categoryRepository.delete(category);
     }
 
@@ -52,7 +52,8 @@ public class SpringDataCategoryService implements CategoryService {
         return categoryRepository.findByName(name);
     }
 
-    private Category findByIdOrElseThrow(long categoryId) {
+    @Override
+    public Category getByIdOrElseThrow(long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException("Cannot find category with id: " + categoryId));
     }
