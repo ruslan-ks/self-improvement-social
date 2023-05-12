@@ -1,10 +1,17 @@
 package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Objects;
 
+/**
+ * Represents activity that may be completed more than once.<br>
+ * If {@code periodType} is set to null, then field {@code timesPerPeriod} is ignored
+ */
 @Entity
 @Table(name = "repetitive_activities")
 @PrimaryKeyJoinColumn(name = "activity_id")
@@ -24,9 +31,12 @@ public class RepetitiveActivity extends Activity {
 
     @Column(name = "period_type")
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "{valid.repetitiveActivity.periodType.notNull}")
     private PeriodType periodType = PeriodType.NO_PERIOD;
 
     @Column(name = "times_per_period")
+    @Min(value = 0, message = "{valid.repetitiveActivity.timesPerPeriod}")
+    @Max(value = 10000, message = "{valid.repetitiveActivity.timesPerPeriod}")
     private int timesPerPeriod;
 
     @Override
