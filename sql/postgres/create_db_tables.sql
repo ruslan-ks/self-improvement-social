@@ -28,6 +28,7 @@ CREATE TABLE user_followings
     CONSTRAINT unique_user_following UNIQUE (user_id, following_id)
 );
 
+-- Repetitive, unlimited completions
 DROP TABLE IF EXISTS activities CASCADE;
 CREATE TABLE activities
 (
@@ -43,17 +44,19 @@ CREATE TABLE activities
         ON DELETE SET NULL
 );
 
-DROP TABLE IF EXISTS repetitive_activities CASCADE;
-CREATE TABLE repetitive_activities
+DROP TABLE IF EXISTS limited_completions_activities CASCADE;
+CREATE TABLE limited_completions_activities
 (
     activity_id      bigint PRIMARY KEY,
-    period_type      text NOT NULL DEFAULT 'NO_PERIOD',
-    times_per_period int  NOT NULL
-        CONSTRAINT valid_repetitive_activity_times_per_period
-            CHECK (times_per_period >= 0 AND times_per_period < 10000),
+    completions_limit int  NOT NULL
+        CONSTRAINT valid_completions_limit
+            CHECK (completions_limit >= 1 AND completions_limit < 10000),
     FOREIGN KEY (activity_id) REFERENCES activities (id)
         ON DELETE CASCADE
 );
+
+--     period_type      text NOT NULL DEFAULT 'NO_PERIOD',
+
 
 DROP TABLE IF EXISTS categories CASCADE;
 CREATE TABLE categories
