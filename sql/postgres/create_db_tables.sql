@@ -55,8 +55,8 @@ CREATE TABLE limited_completions_activities
         ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS periodical_limited_activities CASCADE;
-CREATE TABLE periodical_limited_activities
+DROP TABLE IF EXISTS periodical_limited_completions_activities CASCADE;
+CREATE TABLE periodical_limited_completions_activities
 (
     activity_id bigint PRIMARY KEY,
     period_type text NOT NULL
