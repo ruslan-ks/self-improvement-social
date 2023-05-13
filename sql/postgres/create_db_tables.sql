@@ -55,8 +55,15 @@ CREATE TABLE limited_completions_activities
         ON DELETE CASCADE
 );
 
---     period_type      text NOT NULL DEFAULT 'NO_PERIOD',
-
+DROP TABLE IF EXISTS periodical_limited_activities CASCADE;
+CREATE TABLE periodical_limited_activities
+(
+    activity_id bigint PRIMARY KEY,
+    period_type text NOT NULL
+        CONSTRAINT not_empty_period_type CHECK (length(period_type) > 0),
+    FOREIGN KEY (activity_id) REFERENCES limited_completions_activities (activity_id)
+        ON DELETE CASCADE
+);
 
 DROP TABLE IF EXISTS categories CASCADE;
 CREATE TABLE categories
@@ -106,9 +113,6 @@ INSERT INTO activities(name, description, minutes_required, author_id)
 VALUES ('Coding', 'Write code', 60, 1),
        ('Cooking', 'Make a dish', 45, 1),
        ('Learning english', 'Just learn it', 120, 1);
-
-INSERT INTO repetitive_activities(activity_id, period_type, times_per_period)
-VALUES (1, 'DAILY', 1);
 
 INSERT INTO user_activities(user_id, activity_id)
 VALUES (1, 1),
