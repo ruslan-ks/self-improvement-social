@@ -89,8 +89,4 @@ public class Activity implements Serializable {
         this.categories.addAll(categories);
     }
 
-    public boolean isRepetitive() {
-        return false;
-    }
-
 }
