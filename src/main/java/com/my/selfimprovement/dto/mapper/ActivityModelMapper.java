@@ -5,7 +5,8 @@ import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.dto.response.DetailedActivityResponse;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.Category;
-import com.my.selfimprovement.entity.RepetitiveActivity;
+import com.my.selfimprovement.entity.LimitedCompletionsActivity;
+import com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,9 @@ public class ActivityModelMapper implements ActivityMapper {
     public Activity toActivity(NewActivityRequest newActivityRequest) {
         return switch (newActivityRequest.getActivityType()) {
             case REGULAR -> modelMapper.map(newActivityRequest, Activity.class);
-            case REPETITIVE -> modelMapper.map(newActivityRequest, RepetitiveActivity.class);
+            case LIMITED_COMPLETIONS -> modelMapper.map(newActivityRequest, LimitedCompletionsActivity.class);
+            case PERIODICAL_LIMITED_COMPLETIONS ->
+                    modelMapper.map(newActivityRequest, PeriodicalLimitedCompletionsActivity.class);
         };
     }
 
@@ -38,9 +41,19 @@ public class ActivityModelMapper implements ActivityMapper {
                 .map(ua -> ua.getUser().getId())
                 .collect(Collectors.toSet());
         response.setUserIds(userIds);
-        ActivityType type = activity.isRepetitive() ? ActivityType.REPETITIVE : ActivityType.REGULAR;
+        ActivityType type = typeFor(activity);
         response.setActivityType(type);
         return response;
+    }
+
+    private ActivityType typeFor(Activity activity) {
+        if (activity instanceof PeriodicalLimitedCompletionsActivity) {
+            return ActivityType.PERIODICAL_LIMITED_COMPLETIONS;
+        }
+        if (activity instanceof LimitedCompletionsActivity) {
+            return ActivityType.LIMITED_COMPLETIONS;
+        }
+        return ActivityType.REGULAR;
     }
 
 }
