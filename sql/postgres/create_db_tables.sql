@@ -28,6 +28,7 @@ CREATE TABLE user_followings
     CONSTRAINT unique_user_following UNIQUE (user_id, following_id)
 );
 
+-- Repetitive, unlimited completions
 DROP TABLE IF EXISTS activities CASCADE;
 CREATE TABLE activities
 (
@@ -43,15 +44,24 @@ CREATE TABLE activities
         ON DELETE SET NULL
 );
 
-DROP TABLE IF EXISTS repetitive_activities CASCADE;
-CREATE TABLE repetitive_activities
+DROP TABLE IF EXISTS limited_completions_activities CASCADE;
+CREATE TABLE limited_completions_activities
 (
-    activity_id      bigint PRIMARY KEY,
-    period_type      text NOT NULL DEFAULT 'NO_PERIOD',
-    times_per_period int  NOT NULL
-        CONSTRAINT valid_repetitive_activity_times_per_period
-            CHECK (times_per_period >= 0 AND times_per_period < 10000),
+    activity_id       bigint PRIMARY KEY,
+    completions_limit int NOT NULL
+        CONSTRAINT valid_completions_limit
+            CHECK (completions_limit >= 1 AND completions_limit < 10000),
     FOREIGN KEY (activity_id) REFERENCES activities (id)
+        ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS periodical_limited_completions_activities CASCADE;
+CREATE TABLE periodical_limited_completions_activities
+(
+    activity_id bigint PRIMARY KEY,
+    period_type text NOT NULL
+        CONSTRAINT not_empty_period_type CHECK (length(period_type) > 0),
+    FOREIGN KEY (activity_id) REFERENCES limited_completions_activities (activity_id)
         ON DELETE CASCADE
 );
 
@@ -104,8 +114,11 @@ VALUES ('Coding', 'Write code', 60, 1),
        ('Cooking', 'Make a dish', 45, 1),
        ('Learning english', 'Just learn it', 120, 1);
 
-INSERT INTO repetitive_activities(activity_id, period_type, times_per_period)
-VALUES (1, 'DAILY', 1);
+INSERT INTO limited_completions_activities(activity_id, completions_limit)
+VALUES (1, 1);
+
+INSERT INTO periodical_limited_completions_activities(activity_id, period_type)
+VALUES (1, 'DAILY');
 
 INSERT INTO user_activities(user_id, activity_id)
 VALUES (1, 1),
@@ -114,4 +127,4 @@ VALUES (1, 1),
 INSERT INTO user_activities_completions(user_activity_id)
 VALUES (1),
        (1),
-       (1);
+       (2);

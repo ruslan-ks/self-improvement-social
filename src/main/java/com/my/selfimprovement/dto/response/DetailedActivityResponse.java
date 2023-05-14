@@ -2,8 +2,8 @@ package com.my.selfimprovement.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.my.selfimprovement.dto.request.ActivityType;
-import com.my.selfimprovement.entity.RepetitiveActivity;
 
+import com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity;
 import lombok.Data;
 
 import java.util.Set;
@@ -26,7 +26,9 @@ public class DetailedActivityResponse {
     private Set<Long> categoryIds;
     private Set<Long> userIds;
 
-    // RegularActivity properties
-    private RepetitiveActivity.PeriodType periodType;
-    private Long timesPerPeriod;
+    // LimitedCompletionsActivity properties
+    private Long completionsLimit;
+
+    // PeriodicalLimitedCompletionsActivity properties
+    private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
 }

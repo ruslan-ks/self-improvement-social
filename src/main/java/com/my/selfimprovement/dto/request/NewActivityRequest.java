@@ -1,6 +1,6 @@
 package com.my.selfimprovement.dto.request;
 
-import com.my.selfimprovement.entity.RepetitiveActivity;
+import com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -32,11 +32,10 @@ public class NewActivityRequest {
     @NotNull
     private ActivityType activityType = ActivityType.REGULAR;
 
-    @NotNull(message = "{valid.repetitiveActivity.periodType.notNull}")
-    private RepetitiveActivity.PeriodType periodType = RepetitiveActivity.PeriodType.NO_PERIOD;
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
+    @Max(value = 10000, message = "{valid.limitedCompletionsActivity.completionsLimit}")
+    private Integer completionsLimit;
 
-    @Min(value = 0, message = "{valid.repetitiveActivity.timesPerPeriod}")
-    @Max(value = 10000, message = "{valid.repetitiveActivity.timesPerPeriod}")
-    private int timesPerPeriod;
+    private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
 
 }
