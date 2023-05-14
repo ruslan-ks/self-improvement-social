@@ -72,9 +72,6 @@ public class UserActivity implements Serializable {
     }
 
     public void addCompletion(UserActivityCompletion completion) {
-        if (!(completions.isEmpty() || activity.isRepetitive())) {
-            throw new IllegalStateException("Activity " + this + " is already completed!");
-        }
         completions.add(completion);
     }
 
