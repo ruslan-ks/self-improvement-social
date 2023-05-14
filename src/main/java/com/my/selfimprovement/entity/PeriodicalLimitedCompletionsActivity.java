@@ -24,7 +24,7 @@ public class PeriodicalLimitedCompletionsActivity extends LimitedCompletionsActi
 
     @Column(name = "period_type")
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "{valid.repetitiveActivity.periodType.notNull}")
+    @NotNull(message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
     private PeriodType periodType;
 
     @Override
