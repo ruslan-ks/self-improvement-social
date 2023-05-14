@@ -27,7 +27,7 @@ public class DetailedActivityResponse {
     private Set<Long> userIds;
 
     // LimitedCompletionsActivity properties
-    private Long timesPerPeriod;
+    private Long completionsLimit;
 
     // PeriodicalLimitedCompletionsActivity properties
     private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
