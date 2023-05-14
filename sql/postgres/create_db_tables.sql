@@ -114,6 +114,12 @@ VALUES ('Coding', 'Write code', 60, 1),
        ('Cooking', 'Make a dish', 45, 1),
        ('Learning english', 'Just learn it', 120, 1);
 
+INSERT INTO limited_completions_activities(activity_id, completions_limit)
+VALUES (1, 1);
+
+INSERT INTO periodical_limited_completions_activities(activity_id, period_type)
+VALUES (1, 'DAILY');
+
 INSERT INTO user_activities(user_id, activity_id)
 VALUES (1, 1),
        (1, 2);
@@ -121,4 +127,4 @@ VALUES (1, 1),
 INSERT INTO user_activities_completions(user_activity_id)
 VALUES (1),
        (1),
-       (1);
+       (2);
