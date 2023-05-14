@@ -47,8 +47,8 @@ CREATE TABLE activities
 DROP TABLE IF EXISTS limited_completions_activities CASCADE;
 CREATE TABLE limited_completions_activities
 (
-    activity_id      bigint PRIMARY KEY,
-    completions_limit int  NOT NULL
+    activity_id       bigint PRIMARY KEY,
+    completions_limit int NOT NULL
         CONSTRAINT valid_completions_limit
             CHECK (completions_limit >= 1 AND completions_limit < 10000),
     FOREIGN KEY (activity_id) REFERENCES activities (id)

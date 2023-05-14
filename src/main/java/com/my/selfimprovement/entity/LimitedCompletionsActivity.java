@@ -23,7 +23,7 @@ public class LimitedCompletionsActivity extends Activity {
     private long id;
 
     @Column(name = "completions_limit")
-    @Min(value = 0, message = "{valid.limitedCompletionsActivity.completionsLimit}")
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     @Max(value = 10000, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     private int completionsLimit;
 

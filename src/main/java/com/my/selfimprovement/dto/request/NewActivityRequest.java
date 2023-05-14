@@ -32,11 +32,10 @@ public class NewActivityRequest {
     @NotNull
     private ActivityType activityType = ActivityType.REGULAR;
 
-    @Min(value = 0, message = "{valid.limitedCompletionsActivity.completionsLimit}")
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     @Max(value = 10000, message = "{valid.limitedCompletionsActivity.completionsLimit}")
-    private int completionsLimit;
+    private Integer completionsLimit;
 
-    @NotNull(message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
     private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
 
 }
