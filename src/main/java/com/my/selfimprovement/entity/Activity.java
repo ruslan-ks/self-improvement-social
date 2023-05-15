@@ -20,18 +20,18 @@ public class Activity implements Serializable {
     private long id;
 
     @Column(name = "name")
-    @Size(min = 2, max = 256, message = "{valid.activity.name.size}")
+    @Size(min = 2, max = 255, message = "{valid.activity.name.size}")
     @NotEmpty(message = "{valid.activity.name.notEmpty}")
     private String name;
 
     @Column(name = "description")
-    @Size(min = 2, max = 256, message = "{valid.activity.description.size}")
+    @Size(min = 2, max = 255, message = "{valid.activity.description.size}")
     @NotEmpty(message = "{valid.activity.description.notEmpty}")
     private String description;
 
     @Column(name = "minutes_required")
     @Min(value = 1, message = "{valid.activity.minutesRequired}")
-    @Max(value = 10000, message = "{valid.activity.minutesRequired}")
+    @Max(value = 9999, message = "{valid.activity.minutesRequired}")
     private int minutesRequired;
 
     @ManyToOne
