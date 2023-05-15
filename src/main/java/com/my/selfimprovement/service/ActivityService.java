@@ -2,7 +2,10 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.entity.Activity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.stream.Stream;
 
 public interface ActivityService {
 
@@ -17,5 +20,7 @@ public interface ActivityService {
      */
     @PreAuthorize("isAuthenticated()")
     Activity create(NewActivityRequest activityRequest, long authorId);
+
+    Stream<Activity> getPage(Pageable pageable);
 
 }
