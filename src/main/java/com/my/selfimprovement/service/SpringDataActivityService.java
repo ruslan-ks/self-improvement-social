@@ -48,4 +48,9 @@ public class SpringDataActivityService implements ActivityService {
         return activityRepository.findAll(pageable).stream();
     }
 
+    @Override
+    public long count() {
+        return activityRepository.count();
+    }
+
 }

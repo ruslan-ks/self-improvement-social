@@ -23,4 +23,6 @@ public interface ActivityService {
 
     Stream<Activity> getPage(Pageable pageable);
 
+    long count();
+
 }

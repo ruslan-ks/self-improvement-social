@@ -54,4 +54,10 @@ public class ActivitiesController {
         return HttpUtils.ok(Map.of("activities", activities));
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ResponseBody> getCount() {
+        long count = activityService.count();
+        return HttpUtils.ok(Map.of("activityCount", count));
+    }
+
 }
