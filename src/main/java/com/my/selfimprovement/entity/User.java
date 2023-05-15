@@ -33,16 +33,16 @@ public class User implements Serializable {
 
     @Column(name = "name")
     @NotEmpty(message = "{valid.user.name.notEmpty}")
-    @Size(min = 2, max = 128, message = "{valid.user.name.size}")
+    @Size(min = 2, max = 127, message = "{valid.user.name.size}")
     private String name;
 
     @Column(name = "surname")
-    @Size(min = 2, max = 128, message = "{valid.user.surname.size}")
+    @Size(min = 2, max = 127, message = "{valid.user.surname.size}")
     private String surname;
 
     @Column(name = "email")
     @NotEmpty(message = "{valid.user.email.notEmpty}")
-    @Size(min = 2, max = 128, message = "{valid.user.email.size}")
+    @Size(min = 2, max = 127, message = "{valid.user.email.size}")
     @Email(message = "{valid.user.email.format}")
     private String email;
 
