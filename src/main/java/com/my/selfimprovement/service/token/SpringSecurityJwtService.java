@@ -4,10 +4,7 @@ import com.my.selfimprovement.security.SpringUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -43,6 +40,11 @@ public class SpringSecurityJwtService implements JwtService {
     @Override
     public Instant getExpiration(String jwt) {
         return decoder.decode(jwt).getExpiresAt();
+    }
+
+    @Override
+    public long getUserId(Jwt jwt) {
+        return jwt.getClaim(CLAIM_USER_ID);
     }
 
 }

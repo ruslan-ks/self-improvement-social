@@ -32,6 +32,14 @@ public interface UserService {
     Optional<User> findById(long userId);
 
     /**
+     * Returns user with specified id, otherwise throws exception
+     * @param userId user id
+     * @return found user
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user with this id does not exist
+     */
+    User findByIdOrElseThrow(long userId);
+
+    /**
      * Saves {@code file} and assigns file name to user avatar field
      * @param file name of file to be set
      * @param userId user id

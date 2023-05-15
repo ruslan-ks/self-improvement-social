@@ -23,4 +23,9 @@ public interface CategoryService {
 
     Optional<Category> getByName(String name);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.CategoryNotFoundException if category with specified id not found
+     */
+    Category getByIdOrElseThrow(long id);
+
 }

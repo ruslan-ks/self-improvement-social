@@ -1,6 +1,7 @@
 package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -19,19 +20,27 @@ public class Activity implements Serializable {
     private long id;
 
     @Column(name = "name")
+    @Size(min = 2, max = 256, message = "{valid.activity.name.size}")
+    @NotEmpty(message = "{valid.activity.name.notEmpty}")
     private String name;
 
     @Column(name = "description")
+    @Size(min = 2, max = 256, message = "{valid.activity.description.size}")
+    @NotEmpty(message = "{valid.activity.description.notEmpty}")
     private String description;
 
     @Column(name = "minutes_required")
+    @Min(value = 1, message = "{valid.activity.minutesRequired}")
+    @Max(value = 10000, message = "{valid.activity.minutesRequired}")
     private int minutesRequired;
 
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @NotNull
     private User author;
 
     @ManyToMany(mappedBy = "activities", cascade = CascadeType.PERSIST)
+    @NotEmpty(message = "{valid.activity.categoryIds.notEmpty}")
     private final Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "activity")
@@ -78,10 +87,6 @@ public class Activity implements Serializable {
 
     public void addCategories(Collection<Category> categories) {
         this.categories.addAll(categories);
-    }
-
-    public boolean isRepetitive() {
-        return false;
     }
 
 }

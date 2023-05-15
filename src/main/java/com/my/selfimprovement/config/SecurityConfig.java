@@ -53,6 +53,8 @@ public class SecurityConfig {
 
     private static final String CATEGORIES = "/categories/**";
 
+    private static final String ACTIVITIES = "/activities/**";
+
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
         var authProvider = new DaoAuthenticationProvider();
@@ -105,6 +107,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, CATEGORIES)
                                 .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers(HttpMethod.DELETE, CATEGORIES)
+                                .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.POST, ACTIVITIES)
                                 .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
