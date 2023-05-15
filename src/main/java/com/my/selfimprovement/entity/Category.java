@@ -22,7 +22,7 @@ public class Category implements Serializable {
     private long id;
 
     @Column(name = "name", unique = true)
-    @Size(min = 1, max = 128, message = "{valid.category.name.size}")
+    @Size(min = 1, max = 127, message = "{valid.category.name.size}")
     private String name;
 
     @ManyToMany
