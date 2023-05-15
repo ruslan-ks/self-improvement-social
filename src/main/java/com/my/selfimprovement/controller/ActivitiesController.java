@@ -4,6 +4,7 @@ import com.my.selfimprovement.dto.mapper.ActivityMapper;
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.dto.response.DetailedActivityResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.dto.response.ShortActivityResponse;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.token.JwtService;
@@ -12,14 +13,13 @@ import com.my.selfimprovement.util.validation.abstracts.ControllerLayerValidator
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,6 +44,20 @@ public class ActivitiesController {
         Activity createdActivity = activityService.create(request, authorId);
         DetailedActivityResponse response = activityMapper.toDetailedActivityResponse(createdActivity);
         return HttpUtils.ok(Map.of("activity", response));
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseBody> getPage(Pageable pageable) {
+        List<ShortActivityResponse> activities = activityService.getPage(pageable)
+                .map(activityMapper::toShortActivityResponse)
+                .toList();
+        return HttpUtils.ok(Map.of("activities", activities));
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ResponseBody> getCount() {
+        long count = activityService.count();
+        return HttpUtils.ok(Map.of("activityCount", count));
     }
 
 }

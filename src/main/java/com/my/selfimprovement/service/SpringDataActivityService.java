@@ -8,10 +8,12 @@ import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.ActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -35,9 +37,20 @@ public class SpringDataActivityService implements ActivityService {
         Activity activity = activityMapper.toActivity(activityRequest);
         activity.setAuthor(author);
         activity.addCategories(categories);
+        categories.forEach(c -> c.addActivity(activity));
         activityRepository.save(activity);
         log.info("Activity created: {}", activity);
         return activity;
+    }
+
+    @Override
+    public Stream<Activity> getPage(Pageable pageable) {
+        return activityRepository.findAll(pageable).stream();
+    }
+
+    @Override
+    public long count() {
+        return activityRepository.count();
     }
 
 }

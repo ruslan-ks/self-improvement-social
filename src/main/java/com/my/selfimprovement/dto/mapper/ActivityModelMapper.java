@@ -3,6 +3,7 @@ package com.my.selfimprovement.dto.mapper;
 import com.my.selfimprovement.dto.request.ActivityType;
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.dto.response.DetailedActivityResponse;
+import com.my.selfimprovement.dto.response.ShortActivityResponse;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.Category;
 import com.my.selfimprovement.entity.LimitedCompletionsActivity;
@@ -33,10 +34,8 @@ public class ActivityModelMapper implements ActivityMapper {
     @Override
     public DetailedActivityResponse toDetailedActivityResponse(Activity activity) {
         DetailedActivityResponse response = modelMapper.map(activity, DetailedActivityResponse.class);
-        Set<Long> categoryIds = activity.getCategories().stream()
-                .map(Category::getId)
-                .collect(Collectors.toSet());
-        response.setCategoryIds(categoryIds);
+        Set<Long> categoryIdSet = toCategoryIdSet(activity.getCategories());
+        response.setCategoryIds(categoryIdSet);
         Set<Long> userIds = activity.getUserActivities().stream()
                 .map(ua -> ua.getUser().getId())
                 .collect(Collectors.toSet());
@@ -44,6 +43,21 @@ public class ActivityModelMapper implements ActivityMapper {
         ActivityType type = typeFor(activity);
         response.setActivityType(type);
         return response;
+    }
+
+    @Override
+    public ShortActivityResponse toShortActivityResponse(Activity activity) {
+        ShortActivityResponse response = modelMapper.map(activity, ShortActivityResponse.class);
+        response.setCategoryIds(toCategoryIdSet(activity.getCategories()));
+        response.setUserCount(activity.getUserActivities().size());
+        response.setActivityType(typeFor(activity));
+        return response;
+    }
+
+    private Set<Long> toCategoryIdSet(Set<Category> categorySet) {
+        return categorySet.stream()
+                .map(Category::getId)
+                .collect(Collectors.toSet());
     }
 
     private ActivityType typeFor(Activity activity) {
