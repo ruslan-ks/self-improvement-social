@@ -5,6 +5,7 @@ import com.my.selfimprovement.entity.Activity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface ActivityService {
@@ -22,6 +23,8 @@ public interface ActivityService {
     Activity create(NewActivityRequest activityRequest, long authorId);
 
     Stream<Activity> getPage(Pageable pageable);
+
+    Optional<Activity> getById(long id);
 
     long count();
 
