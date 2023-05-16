@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +52,11 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     public long count() {
         return activityRepository.count();
+    }
+
+    @Override
+    public Optional<Activity> getById(long id) {
+        return activityRepository.findById(id);
     }
 
 }

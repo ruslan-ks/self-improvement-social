@@ -60,4 +60,13 @@ public class ActivitiesController {
         return HttpUtils.ok(Map.of("activityCount", count));
     }
 
+    @GetMapping("{activityId}")
+    public ResponseEntity<ResponseBody> getById(@PathVariable long activityId) {
+        return activityService.getById(activityId)
+                .map(activityMapper::toDetailedActivityResponse)
+                .map(dto -> Map.of("activity", dto))
+                .map(HttpUtils::ok)
+                .orElseGet(() -> HttpUtils.notFound("Activity with id " + activityId + " not found"));
+    }
+
 }
