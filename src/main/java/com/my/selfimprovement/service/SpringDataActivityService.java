@@ -5,7 +5,9 @@ import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.Category;
 import com.my.selfimprovement.entity.User;
+import com.my.selfimprovement.entity.UserActivity;
 import com.my.selfimprovement.repository.ActivityRepository;
+import com.my.selfimprovement.repository.UserActivityRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ import java.util.stream.Stream;
 public class SpringDataActivityService implements ActivityService {
 
     private final ActivityRepository activityRepository;
+
+    private final UserActivityRepository userActivityRepository;
 
     private final UserService userService;
 
@@ -57,6 +61,12 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     public Optional<Activity> getById(long id) {
         return activityRepository.findById(id);
+    }
+
+    @Override
+    public Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable) {
+        User user = userService.findByIdOrElseThrow(userId);
+        return userActivityRepository.findUserActivitiesByUser(user, pageable).stream();
     }
 
 }

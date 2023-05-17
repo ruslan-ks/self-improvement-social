@@ -2,6 +2,7 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.entity.Activity;
+import com.my.selfimprovement.entity.UserActivity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -27,5 +28,10 @@ public interface ActivityService {
     Optional<Activity> getById(long id);
 
     long count();
+
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found by id
+     */
+    Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable);
 
 }

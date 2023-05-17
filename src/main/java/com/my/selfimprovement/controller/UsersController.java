@@ -1,12 +1,15 @@
 package com.my.selfimprovement.controller;
 
+import com.my.selfimprovement.dto.mapper.UserActivityMapper;
 import com.my.selfimprovement.dto.mapper.UserMapper;
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.dto.response.DetailedUserResponse;
+import com.my.selfimprovement.dto.response.ShortUserActivityResponse;
 import com.my.selfimprovement.dto.response.ShortUserResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.entity.User;
+import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
@@ -41,11 +44,15 @@ public class UsersController {
 
     private final UserService userService;
 
+    private final ActivityService activityService;
+
     private final PasswordEncoder encoder;
 
     private final UserRegistrationRequestValidator userRegistrationRequestValidator;
 
     private final UserMapper userMapper;
+
+    private final UserActivityMapper userActivityMapper;
 
     private final MessageSource messageSource;
 
@@ -244,6 +251,15 @@ public class UsersController {
         String message = messageSource.getMessage("user.following.removed", null,
                 LocaleContextHolder.getLocale());
         return HttpUtils.ok(message);
+    }
+
+    @Operation(summary = "Get user activities(activities user is going through)")
+    @GetMapping("/{userId}/activities")
+    public ResponseEntity<ResponseBody> getUserActivities(@PathVariable long userId, Pageable pageable) {
+        List<ShortUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
+                .map(userActivityMapper::toShortUserActivityResponse)
+                .toList();
+        return HttpUtils.ok(Map.of("user-activities", userActivities));
     }
 
 }
