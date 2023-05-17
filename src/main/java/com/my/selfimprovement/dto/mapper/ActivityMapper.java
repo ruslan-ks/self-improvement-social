@@ -2,6 +2,7 @@ package com.my.selfimprovement.dto.mapper;
 
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.dto.response.DetailedActivityResponse;
+import com.my.selfimprovement.dto.response.ShortActivityResponse;
 import com.my.selfimprovement.entity.Activity;
 
 public interface ActivityMapper {
@@ -17,5 +18,7 @@ public interface ActivityMapper {
     Activity toActivity(NewActivityRequest newActivityRequest);
 
     DetailedActivityResponse toDetailedActivityResponse(Activity activity);
+
+    ShortActivityResponse toShortActivityResponse(Activity activity);
 
 }
