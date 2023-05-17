@@ -12,4 +12,6 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Long
 
     Page<UserActivity> findUserActivitiesByUser(User user, Pageable pageable);
 
+    long countUserActivitiesByUser(User user);
+
 }

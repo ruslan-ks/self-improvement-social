@@ -69,4 +69,10 @@ public class SpringDataActivityService implements ActivityService {
         return userActivityRepository.findUserActivitiesByUser(user, pageable).stream();
     }
 
+    @Override
+    public long getUserActivityCount(long userId) {
+        User user = userService.findByIdOrElseThrow(userId);
+        return userActivityRepository.countUserActivitiesByUser(user);
+    }
+
 }

@@ -34,4 +34,9 @@ public interface ActivityService {
      */
     Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found by id
+     */
+    long getUserActivityCount(long userId);
+
 }

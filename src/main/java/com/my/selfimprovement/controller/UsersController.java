@@ -262,4 +262,10 @@ public class UsersController {
         return HttpUtils.ok(Map.of("user-activities", userActivities));
     }
 
+    @GetMapping("/{userId}/activities/count")
+    public ResponseEntity<ResponseBody> getUserActivityCount(@PathVariable long userId) {
+        long count = activityService.getUserActivityCount(userId);
+        return HttpUtils.ok(Map.of("user-activity-count", count));
+    }
+
 }
