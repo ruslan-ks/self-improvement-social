@@ -71,12 +71,24 @@ public interface UserService {
     @PreAuthorize("isAuthenticated()")
     void removeAvatar(long userId);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
+     */
     long getFollowersCount(long userId);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
+     */
     Stream<User> getFollowersPage(long userId, Pageable pageable);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
+     */
     long getFollowingsCount(long userId);
 
+    /**
+     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
+     */
     Stream<User> getFollowingsPage(long userId, Pageable pageable);
 
     /**
