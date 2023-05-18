@@ -7,7 +7,6 @@ import com.my.selfimprovement.dto.response.ShortCategoryResponse;
 import com.my.selfimprovement.entity.Category;
 import com.my.selfimprovement.service.CategoryService;
 import com.my.selfimprovement.util.HttpUtils;
-import com.my.selfimprovement.util.exception.CategoryNotFoundException;
 import com.my.selfimprovement.util.validation.NewCategoryValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -53,11 +52,7 @@ public class CategoriesController {
 
     @DeleteMapping("{categoryId}")
     public ResponseEntity<ResponseBody> delete(@PathVariable long categoryId) {
-        try {
-            categoryService.remove(categoryId);
-        } catch (CategoryNotFoundException ex) {
-            return HttpUtils.notFound(ex.getMessage());
-        }
+        categoryService.remove(categoryId);
         String message = messageSource.getMessage("category.removed", null, LocaleContextHolder.getLocale());
         return HttpUtils.ok(message);
     }
