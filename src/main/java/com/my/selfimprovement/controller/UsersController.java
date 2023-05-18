@@ -13,6 +13,7 @@ import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
+import com.my.selfimprovement.util.exception.AvatarNotFoundException;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -78,41 +79,23 @@ public class UsersController {
 
     @GetMapping
     public ResponseEntity<ResponseBody> getActiveUsersPage(Pageable pageable) {
-        log.info("Pageable: {}", pageable);
         List<ShortUserResponse> users = userService.findActiveUsersPage(pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("users", users))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("users", users));
     }
 
     @GetMapping("/count")
     public ResponseEntity<ResponseBody> count() {
         long count = userService.count();
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("count", count))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("count", count));
     }
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseBody> getById(@PathVariable("id") long userId) {
-        return userService.findById(userId)
-                .map(userMapper::toDetailedUserResponse)
-                .map(this::buildDetailedUserResponse)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    private ResponseEntity<ResponseBody> buildDetailedUserResponse(DetailedUserResponse user) {
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("user", user))
-                .build();
-        return ResponseEntity.ok().body(responseBody);
+        User user = userService.findByIdOrElseThrow(userId);
+        DetailedUserResponse userDto = userMapper.toDetailedUserResponse(user);
+        return HttpUtils.ok(Map.of("user", userDto));
     }
 
     @PatchMapping
@@ -134,7 +117,7 @@ public class UsersController {
     public ResponseEntity<Resource> getAvatar(@PathVariable("id") long userId) {
         return userService.getAvatar(userId)
                 .map(HttpUtils::buildInlineFileResponse)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .orElseThrow(() -> new AvatarNotFoundException("Avatar for user with id " + userId + " not found"));
     }
 
     @PutMapping("/avatar")
@@ -143,22 +126,14 @@ public class UsersController {
         if (file.isEmpty()) {
             String message = messageSource.getMessage("user.avatar.notAttached", null,
                     LocaleContextHolder.getLocale());
-            ResponseBody badRequestResponseBody = ResponseBody.builder()
-                    .status(HttpStatus.BAD_REQUEST)
-                    .message(message)
-                    .build();
-            return ResponseEntity.badRequest().body(badRequestResponseBody);
+            return HttpUtils.badRequest(message);
         }
 
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         userService.setAvatar(file, userId);
         String message = messageSource.getMessage("user.avatar.uploaded", null,
                 LocaleContextHolder.getLocale());
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .message(message)
-                .build();
-        return ResponseEntity.ok().body(responseBody);
+        return HttpUtils.ok(message);
     }
 
     @DeleteMapping("/avatar")
@@ -174,11 +149,7 @@ public class UsersController {
     @GetMapping("/{userId}/followers/count")
     public ResponseEntity<ResponseBody> getFollowersCount(@PathVariable long userId) {
         long count = userService.getFollowersCount(userId);
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("followersCount", count))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("followersCount", count));
     }
 
     @GetMapping("/{userId}/followers")
@@ -186,21 +157,13 @@ public class UsersController {
         List<ShortUserResponse> followers = userService.getFollowersPage(userId, pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("followers", followers))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("followers", followers));
     }
 
     @GetMapping("/{userId}/followings/count")
     public ResponseEntity<ResponseBody> getFollowingsCount(@PathVariable long userId) {
         long count = userService.getFollowingsCount(userId);
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("followingsCount", count))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("followingsCount", count));
     }
 
 
@@ -209,11 +172,7 @@ public class UsersController {
         List<ShortUserResponse> followings = userService.getFollowingsPage(userId, pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("followings", followings))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("followings", followings));
     }
 
     @Operation(summary = "Add currenly logged user to followers of user with id {userId}")
