@@ -3,9 +3,9 @@ package com.my.selfimprovement.controller;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.dto.request.UserLoginRequest;
 import com.my.selfimprovement.service.token.JwtService;
+import com.my.selfimprovement.util.HttpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.Instant;
 import java.util.Map;
 
 @RestController
@@ -32,13 +31,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         log.debug("Login request for user: {}", auth.getName());
         String jwt = jwtService.generateToken(auth);
-
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .timestamp(Instant.now())
-                .data(Map.of("idToken", jwt, "expiresAt", jwtService.getExpiration(jwt)))
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("idToken", jwt, "expiresAt", jwtService.getExpiration(jwt)));
     }
 
 }
