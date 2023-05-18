@@ -64,7 +64,7 @@ public interface UserService {
      * Removes avatar if one is present
      * @param userId user id
      * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
-     * @throws java.util.NoSuchElementException if user.avatar is null
+     * @throws com.my.selfimprovement.util.exception.AvatarNotFoundException if user.avatar is null
      * @throws com.my.selfimprovement.util.exception.FileException if file cannot be removed as defined
      * by {@link FileService#removeFromUploads(String)}
      */

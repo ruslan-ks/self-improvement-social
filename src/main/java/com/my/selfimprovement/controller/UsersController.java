@@ -164,19 +164,11 @@ public class UsersController {
     @DeleteMapping("/avatar")
     public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
-        try {
-            userService.removeAvatar(userId);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
+        userService.removeAvatar(userId);
 
         String message = messageSource.getMessage("user.avatar.deleted", null,
                 LocaleContextHolder.getLocale());
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .message(message)
-                .build();
-        return ResponseEntity.ok().body(responseBody);
+        return HttpUtils.ok(message);
     }
 
     @GetMapping("/{userId}/followers/count")

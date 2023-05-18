@@ -4,6 +4,7 @@ import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
 import com.my.selfimprovement.util.LoadedFile;
+import com.my.selfimprovement.util.exception.AvatarNotFoundException;
 import com.my.selfimprovement.util.exception.UserNotFoundException;
 import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
@@ -110,7 +111,7 @@ public class SpringDataUserService implements UserService {
         User user = findByIdOrElseThrow(userId);
         String avatarFileName = user.getAvatarFileName();
         if (avatarFileName == null) {
-            throw new NoSuchElementException("User with id " + userId + " has no avatar");
+            throw new AvatarNotFoundException("User with id " + userId + " has no avatar");
         }
         fileService.removeFromUploads(avatarFileName);
         user.setAvatarFileName(null);
