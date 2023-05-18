@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -63,48 +62,45 @@ public class UsersController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseBody> create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseBody create(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest) {
         userRegistrationRequestValidator.validate(userRegistrationRequest);
         User user = userMapper.toUser(userRegistrationRequest);
         user.setPassword(encoder.encode(user.getPassword()));
         userService.save(user);
 
         DetailedUserResponse detailedUserResponse = userMapper.toDetailedUserResponse(user);
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.CREATED)
-                .data(Map.of("user", detailedUserResponse))
-                .build();
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
+        return ResponseBody.of(HttpStatus.CREATED, "user", detailedUserResponse);
     }
 
     @GetMapping
-    public ResponseEntity<ResponseBody> getActiveUsersPage(Pageable pageable) {
+    public ResponseBody getActiveUsersPage(Pageable pageable) {
         List<ShortUserResponse> users = userService.findActiveUsersPage(pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        return HttpUtils.ok(Map.of("users", users));
+        return ResponseBody.ok("users", users);
     }
 
     @GetMapping("/count")
-    public ResponseEntity<ResponseBody> count() {
+    public ResponseBody count() {
         long count = userService.count();
-        return HttpUtils.ok(Map.of("count", count));
+        return ResponseBody.ok("count", count);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResponseBody> getById(@PathVariable("id") long userId) {
+    public ResponseBody getById(@PathVariable("id") long userId) {
         User user = userService.findByIdOrElseThrow(userId);
         DetailedUserResponse userDto = userMapper.toDetailedUserResponse(user);
-        return HttpUtils.ok(Map.of("user", userDto));
+        return ResponseBody.ok("user", userDto);
     }
 
     @PatchMapping
-    public ResponseEntity<ResponseBody> update(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
+    public ResponseBody update(@RequestBody @Valid UserUpdateRequest userUpdateRequest,
                                                @AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         User updatedUser = userService.update(userId, userUpdateRequest);
         DetailedUserResponse updatedUserResponse = userMapper.toDetailedUserResponse(updatedUser);
-        return HttpUtils.ok(Map.of("user", updatedUserResponse));
+        return ResponseBody.ok("user", updatedUserResponse);
     }
 
     @GetMapping("/{id}/avatar")
@@ -135,32 +131,32 @@ public class UsersController {
     }
 
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<ResponseBody> getFollowersCount(@PathVariable long userId) {
+    public ResponseBody getFollowersCount(@PathVariable long userId) {
         long count = userService.getFollowersCount(userId);
-        return HttpUtils.ok(Map.of("followersCount", count));
+        return ResponseBody.ok("followersCount", count);
     }
 
     @GetMapping("/{userId}/followers")
-    public ResponseEntity<ResponseBody> getUserFollowersPage(@PathVariable long userId, Pageable pageable) {
+    public ResponseBody getUserFollowersPage(@PathVariable long userId, Pageable pageable) {
         List<ShortUserResponse> followers = userService.getFollowersPage(userId, pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        return HttpUtils.ok(Map.of("followers", followers));
+        return ResponseBody.ok("followers", followers);
     }
 
     @GetMapping("/{userId}/followings/count")
-    public ResponseEntity<ResponseBody> getFollowingsCount(@PathVariable long userId) {
+    public ResponseBody getFollowingsCount(@PathVariable long userId) {
         long count = userService.getFollowingsCount(userId);
-        return HttpUtils.ok(Map.of("followingsCount", count));
+        return ResponseBody.ok("followingsCount", count);
     }
 
 
     @GetMapping("/{userId}/followings")
-    public ResponseEntity<ResponseBody> getFollowingsPage(@PathVariable long userId, Pageable pageable) {
+    public ResponseBody getFollowingsPage(@PathVariable long userId, Pageable pageable) {
         List<ShortUserResponse> followings = userService.getFollowingsPage(userId, pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
-        return HttpUtils.ok(Map.of("followings", followings));
+        return ResponseBody.ok("followings", followings);
     }
 
     @Operation(summary = "Add currenly logged user to followers of user with id {userId}")
@@ -190,17 +186,17 @@ public class UsersController {
 
     @Operation(summary = "Get user activities(activities user is going through)")
     @GetMapping("/{userId}/activities")
-    public ResponseEntity<ResponseBody> getUserActivities(@PathVariable long userId, Pageable pageable) {
+    public ResponseBody getUserActivities(@PathVariable long userId, Pageable pageable) {
         List<ShortUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
                 .map(userActivityMapper::toShortUserActivityResponse)
                 .toList();
-        return HttpUtils.ok(Map.of("user-activities", userActivities));
+        return ResponseBody.ok("user-activities", userActivities);
     }
 
     @GetMapping("/{userId}/activities/count")
-    public ResponseEntity<ResponseBody> getUserActivityCount(@PathVariable long userId) {
+    public ResponseBody getUserActivityCount(@PathVariable long userId) {
         long count = activityService.getUserActivityCount(userId);
-        return HttpUtils.ok(Map.of("user-activity-count", count));
+        return ResponseBody.ok("user-activity-count", count);
     }
 
 }
