@@ -9,6 +9,7 @@ import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
+import com.my.selfimprovement.util.exception.ActivityNotFoundException;
 import com.my.selfimprovement.util.validation.abstracts.ControllerLayerValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class ActivitiesController {
                 .map(activityMapper::toDetailedActivityResponse)
                 .map(dto -> Map.of("activity", dto))
                 .map(HttpUtils::ok)
-                .orElseGet(() -> HttpUtils.notFound("Activity with id " + activityId + " not found"));
+                .orElseThrow(() -> new ActivityNotFoundException("Activity with id " + activityId + " not found"));
     }
 
 }
