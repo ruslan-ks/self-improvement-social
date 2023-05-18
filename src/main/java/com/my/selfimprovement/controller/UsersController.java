@@ -104,13 +104,7 @@ public class UsersController {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         User updatedUser = userService.update(userId, userUpdateRequest);
         DetailedUserResponse updatedUserResponse = userMapper.toDetailedUserResponse(updatedUser);
-        String message = messageSource.getMessage("user.updated", null, LocaleContextHolder.getLocale());
-        ResponseBody responseBody = ResponseBody.builder()
-                .status(HttpStatus.OK)
-                .data(Map.of("user", updatedUserResponse))
-                .message(message)
-                .build();
-        return ResponseEntity.ok(responseBody);
+        return HttpUtils.ok(Map.of("user", updatedUserResponse));
     }
 
     @GetMapping("/{id}/avatar")
@@ -128,22 +122,16 @@ public class UsersController {
                     LocaleContextHolder.getLocale());
             return HttpUtils.badRequest(message);
         }
-
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         userService.setAvatar(file, userId);
-        String message = messageSource.getMessage("user.avatar.uploaded", null,
-                LocaleContextHolder.getLocale());
-        return HttpUtils.ok(message);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/avatar")
-    public ResponseEntity<ResponseBody> deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
         long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
         userService.removeAvatar(userId);
-
-        String message = messageSource.getMessage("user.avatar.deleted", null,
-                LocaleContextHolder.getLocale());
-        return HttpUtils.ok(message);
     }
 
     @GetMapping("/{userId}/followers/count")
@@ -184,9 +172,7 @@ public class UsersController {
             log.warn("Cannot add following: {}", ex.getMessage());
             return HttpUtils.badRequest(ex.getMessage());
         }
-        String message = messageSource.getMessage("user.following.added", null,
-                LocaleContextHolder.getLocale());
-        return HttpUtils.ok(message);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Delete currently logged in user from followers of user with id {userId}")
@@ -199,9 +185,7 @@ public class UsersController {
         } catch (NoSuchElementException ex) {
             return HttpUtils.notFound(ex.getMessage());
         }
-        String message = messageSource.getMessage("user.following.removed", null,
-                LocaleContextHolder.getLocale());
-        return HttpUtils.ok(message);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "Get user activities(activities user is going through)")
