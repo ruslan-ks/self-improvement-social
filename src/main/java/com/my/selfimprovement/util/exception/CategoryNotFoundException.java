@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.exception;
 
-public class CategoryNotFoundException extends RuntimeException {
+public class CategoryNotFoundException extends DataNotFoundException {
 
     public CategoryNotFoundException() {
         super();

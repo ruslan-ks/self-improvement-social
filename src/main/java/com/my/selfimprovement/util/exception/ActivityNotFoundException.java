@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.exception;
 
-public class ActivityNotFoundException extends RuntimeException {
+public class ActivityNotFoundException extends DataNotFoundException {
 
     public ActivityNotFoundException() {
         super();

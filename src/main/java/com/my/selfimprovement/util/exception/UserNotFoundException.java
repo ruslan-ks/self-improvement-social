@@ -1,6 +1,6 @@
 package com.my.selfimprovement.util.exception;
 
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends DataNotFoundException {
 
     public UserNotFoundException() {
         super();
