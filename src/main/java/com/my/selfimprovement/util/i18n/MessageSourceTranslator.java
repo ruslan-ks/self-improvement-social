@@ -19,4 +19,9 @@ public class MessageSourceTranslator implements Translator {
         return messageSource.getMessage(messageCode, null, locale);
     }
 
+    @Override
+    public UIMessage translateUIMessage(String messageCode) {
+        return new UIMessage(messageCode, translate(messageCode));
+    }
+
 }
