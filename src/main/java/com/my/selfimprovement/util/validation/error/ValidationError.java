@@ -1,3 +1,5 @@
 package com.my.selfimprovement.util.validation.error;
 
-public record ValidationError(String field, RejectedValue<?> rejectedValue) {}
+import java.io.Serializable;
+
+public record ValidationError(String field, RejectedValue<?> rejectedValue) implements Serializable {}
