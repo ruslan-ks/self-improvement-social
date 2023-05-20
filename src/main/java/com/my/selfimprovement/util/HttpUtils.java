@@ -1,6 +1,7 @@
 package com.my.selfimprovement.util;
 
 import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.util.i18n.UIMessage;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,14 @@ public class HttpUtils {
         ResponseBody responseBody = ResponseBody.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .developerMessage(developerMessage)
+                .build();
+        return ResponseEntity.badRequest().body(responseBody);
+    }
+
+    public static ResponseEntity<ResponseBody> badRequest(UIMessage uiMessage) {
+        ResponseBody responseBody = ResponseBody.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .message(uiMessage)
                 .build();
         return ResponseEntity.badRequest().body(responseBody);
     }
