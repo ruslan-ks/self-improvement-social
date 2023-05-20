@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,11 +55,6 @@ public class UsersController {
     private final UserActivityMapper userActivityMapper;
 
     private final Translator translator;
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
