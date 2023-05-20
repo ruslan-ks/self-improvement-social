@@ -1,12 +1,14 @@
 package com.my.selfimprovement.util.validation.abstracts;
 
 import com.my.selfimprovement.util.exception.ValidationException;
+import com.my.selfimprovement.util.validation.error.ValidationError;
+import com.my.selfimprovement.util.validation.error.RejectedValue;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Adds throwing {@link CustomValidator#validate(T obj)} method.<br>
@@ -25,19 +27,25 @@ public abstract class CustomValidator<T> implements Validator {
         var bindingResult = new BeanPropertyBindingResult(obj, obj.getClass().getSimpleName());
         validate(obj, bindingResult);
         if (bindingResult.hasErrors()) {
-            Map<String, String> fieldErrorMap = bindingResult.getFieldErrors()
-                    .stream()
-                    .collect(HashMap::new, (m, v) -> m.put(v.getField(), v.getDefaultMessage()), HashMap::putAll);
-            throw createValidationException(fieldErrorMap);
+            List<ValidationError> validationErrors = bindingResult.getFieldErrors().stream()
+                    .map(CustomValidator::toValidationError)
+                    .toList();
+            throw createValidationException(validationErrors);
         }
+    }
+
+    private static ValidationError toValidationError(FieldError fieldError) {
+        String field = fieldError.getField();
+        var rejectedValue = new RejectedValue<>(fieldError.getRejectedValue(), fieldError.getCode());
+        return new ValidationError(field, rejectedValue);
     }
 
     /**
      * Creates ValidationException implementation instance to be thrown. Should always return new instance.<br>
      * Called only when validation errors occur in {@link CustomValidator#validate(Object)}
-     * @param fieldErrorMap validation errors
+     * @param validationErrors validation errors
      * @return new instance of ValidationException to be throws from {@link CustomValidator#validate(Object)}
      */
-    protected abstract ValidationException createValidationException(Map<String, String> fieldErrorMap);
+    protected abstract ValidationException createValidationException(List<ValidationError> validationErrors);
 
 }

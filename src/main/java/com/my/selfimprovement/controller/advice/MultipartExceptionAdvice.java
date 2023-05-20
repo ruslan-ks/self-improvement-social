@@ -1,20 +1,23 @@
 package com.my.selfimprovement.controller.advice;
 
 import com.my.selfimprovement.dto.response.ResponseBody;
-import com.my.selfimprovement.util.exception.DataNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 @RestControllerAdvice
-public class DataNotFoundExceptionAdvice {
+@Slf4j
+public class MultipartExceptionAdvice {
 
-    @ExceptionHandler(DataNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseBody handleDataNotFoundException(DataNotFoundException ex) {
+    @ExceptionHandler(MultipartException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseBody handleMultipartException(MultipartException ex) {
+        log.warn("MultipartException caught: ", ex);
         return ResponseBody.builder()
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.BAD_REQUEST)
                 .developerMessage(ex.getMessage())
                 .build();
     }

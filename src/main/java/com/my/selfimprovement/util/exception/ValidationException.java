@@ -1,23 +1,27 @@
 package com.my.selfimprovement.util.exception;
 
+import com.my.selfimprovement.util.validation.error.ValidationError;
+
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
+
+import java.util.List;
 
 public abstract class ValidationException extends RuntimeException {
 
-    private final Map<String, String> fieldErrorMap;
+    private final List<ValidationError> validationErrors = new ArrayList<>();
 
-    protected ValidationException(Map<String, String> fieldErrorMap) {
-        this.fieldErrorMap = fieldErrorMap;
+    protected ValidationException(List<ValidationError> validationErrors) {
+        this.validationErrors.addAll(validationErrors);
     }
 
     @Override
     public String getMessage() {
-        return "Validation failed: " + fieldErrorMap;
+        return "Validation failed: " + validationErrors;
     }
 
-    public Map<String, String> getFieldErrorMap() {
-        return Collections.unmodifiableMap(fieldErrorMap);
+    public List<ValidationError> getValidationErrors() {
+        return Collections.unmodifiableList(validationErrors);
     }
 
 }

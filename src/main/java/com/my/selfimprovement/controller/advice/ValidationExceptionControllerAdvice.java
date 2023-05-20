@@ -1,73 +1,86 @@
 package com.my.selfimprovement.controller.advice;
 
 import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.dto.response.ValidationErrorUIMessage;
 import com.my.selfimprovement.util.exception.ControllerValidationException;
+import com.my.selfimprovement.util.i18n.Translator;
+import com.my.selfimprovement.util.i18n.UIMessage;
+import com.my.selfimprovement.util.validation.error.ValidationError;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Handles exceptions thrown by <strong>controller level validators</strong> and returns corresponding response.
  */
-@ControllerAdvice
+@RestControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
 public class ValidationExceptionControllerAdvice {
 
-    @Autowired
-    private final MessageSource messageSource;
+    private final Translator translator;
 
     /**
      * Handles exceptions thrown by <strong>Spring</strong> validation
-     * @param ex caught exception
-     * @return response with data - map of field:error pairs
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseBody> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = ex.getFieldErrors()
-                .stream()
-                .collect(HashMap::new, (m, v) -> m.put(v.getField(), v.getDefaultMessage()), HashMap::putAll);
-        logValidationErrors(errors);
-        ResponseBody responseBody = validationFailResponseBody(errors);
-        return ResponseEntity.badRequest().body(responseBody);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseBody handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<ValidationErrorUIMessage> validationErrorUIMessages = ex.getFieldErrors().stream()
+                .map(ValidationExceptionControllerAdvice::toValidationErrorUIMessage)
+                .toList();
+        logValidationErrors(validationErrorUIMessages);
+        return validationErrorResponseBody(validationErrorUIMessages);
+    }
+
+    private static ValidationErrorUIMessage toValidationErrorUIMessage(FieldError fieldError) {
+        var uiMessage = new UIMessage(fieldError.getCode(), fieldError.getDefaultMessage());
+        return new ValidationErrorUIMessage(fieldError.getField(), fieldError.getRejectedValue(), uiMessage);
     }
 
     /**
      * Handles exceptions thrown by <strong>custom</strong> controller level validators
-     * @param ex caught exception
-     * @return response - map of field:error pairs
      */
     @ExceptionHandler(ControllerValidationException.class)
-    public ResponseEntity<ResponseBody> handleConstraintViolation(ControllerValidationException ex) {
-        Map<String, String> errors = ex.getFieldErrorMap();
-        logValidationErrors(errors);
-        ResponseBody responseBody = validationFailResponseBody(errors);
-        return ResponseEntity.badRequest().body(responseBody);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseBody handleConstraintViolation(ControllerValidationException ex) {
+        List<ValidationErrorUIMessage> validationErrorUIMessages = ex.getValidationErrors().stream()
+                .map(this::toValidationErrorUIMessage)
+                .toList();
+        logValidationErrors(validationErrorUIMessages);
+        return validationErrorResponseBody(validationErrorUIMessages);
     }
 
-    private void logValidationErrors(Map<String, String> fieldErrorMap) {
-        for (var entry : fieldErrorMap.entrySet()) {
-            log.warn("Invalid field value: {}: {}", entry.getKey(), entry.getValue());
+    private ValidationErrorUIMessage toValidationErrorUIMessage(ValidationError validationError) {
+        String field = validationError.field();
+        Object rejectedValue = validationError.rejectedValue().value();
+        String errorCode = validationError.rejectedValue().errorCode();
+        String errorMessage = translator.translate(errorCode);
+        return new ValidationErrorUIMessage(field, rejectedValue, new UIMessage(errorCode, errorMessage));
+    }
+
+    private void logValidationErrors(List<ValidationErrorUIMessage> validationErrors) {
+        for (var error : validationErrors) {
+            log.warn("Invalid field value: {}: {} - {}", error.field(), error.rejectedValue(),
+                    error.uiMessage().messageCode());
         }
     }
 
-    private ResponseBody validationFailResponseBody(Map<String, String> errors) {
-        String validationFailureMsg = messageSource.getMessage("validation.fail", null,
-                LocaleContextHolder.getLocale());
+    private ResponseBody validationErrorResponseBody(List<ValidationErrorUIMessage> validationErrorUIMessages) {
+        UIMessage validationFailureMsg = new UIMessage("validation.fail",
+                translator.translate("validation.fail"));
         return ResponseBody.builder()
                 .status(HttpStatus.BAD_REQUEST)
                 .message(validationFailureMsg)
-                .data(Map.of("errors", errors))
+                .data(Map.of("validationErrors", validationErrorUIMessages))
                 .build();
     }
 

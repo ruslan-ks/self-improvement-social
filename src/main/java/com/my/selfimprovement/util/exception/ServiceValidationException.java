@@ -1,6 +1,8 @@
 package com.my.selfimprovement.util.exception;
 
-import java.util.Map;
+import com.my.selfimprovement.util.validation.error.ValidationError;
+
+import java.util.List;
 
 /**
  * Should be used when validating the service layer input.<br>
@@ -9,8 +11,8 @@ import java.util.Map;
  */
 public class ServiceValidationException extends ValidationException {
 
-    public ServiceValidationException(Map<String, String> fieldErrorMap) {
-        super(fieldErrorMap);
+    public ServiceValidationException(List<ValidationError> validationErrors) {
+        super(validationErrors);
     }
 
 }

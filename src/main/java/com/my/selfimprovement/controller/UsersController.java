@@ -14,14 +14,14 @@ import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
 import com.my.selfimprovement.util.exception.AvatarNotFoundException;
+import com.my.selfimprovement.util.i18n.Translator;
+import com.my.selfimprovement.util.i18n.UIMessage;
 import com.my.selfimprovement.util.validation.UserRegistrationRequestValidator;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -46,6 +46,8 @@ public class UsersController {
 
     private final ActivityService activityService;
 
+    private final JwtService jwtService;
+
     private final PasswordEncoder encoder;
 
     private final UserRegistrationRequestValidator userRegistrationRequestValidator;
@@ -54,7 +56,7 @@ public class UsersController {
 
     private final UserActivityMapper userActivityMapper;
 
-    private final MessageSource messageSource;
+    private final Translator translator;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -114,11 +116,10 @@ public class UsersController {
     public ResponseEntity<ResponseBody> uploadAvatar(@RequestParam("file") MultipartFile file,
                                                      @AuthenticationPrincipal Jwt jwt) {
         if (file.isEmpty()) {
-            String message = messageSource.getMessage("user.avatar.notAttached", null,
-                    LocaleContextHolder.getLocale());
-            return HttpUtils.badRequest(message);
+            UIMessage uiMessage = translator.translateUIMessage("user.avatar.notAttached");
+            return HttpUtils.badRequest(uiMessage);
         }
-        long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
+        long userId = jwtService.getUserId(jwt);
         userService.setAvatar(file, userId);
         return ResponseEntity.noContent().build();
     }
@@ -126,7 +127,7 @@ public class UsersController {
     @DeleteMapping("/avatar")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAvatar(@AuthenticationPrincipal Jwt jwt) {
-        long userId = jwt.getClaim(JwtService.CLAIM_USER_ID);
+        long userId = jwtService.getUserId(jwt);
         userService.removeAvatar(userId);
     }
 
@@ -163,7 +164,7 @@ public class UsersController {
     @PutMapping("/{userId}/followers")
     public ResponseEntity<ResponseBody> addFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {
         try {
-            userService.addFollower(userId, jwt.getClaim(JwtService.CLAIM_USER_ID));
+            userService.addFollower(userId, jwtService.getUserId(jwt));
         } catch (IllegalArgumentException ex) {
             log.warn("Cannot add following: {}", ex.getMessage());
             return HttpUtils.badRequest(ex.getMessage());
@@ -175,7 +176,7 @@ public class UsersController {
     @DeleteMapping("/{userId}/followers")
     public ResponseEntity<ResponseBody> deleteFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {
         try {
-            userService.removeFollower(userId, jwt.getClaim(JwtService.CLAIM_USER_ID));
+            userService.removeFollower(userId, jwtService.getUserId(jwt));
         } catch (IllegalArgumentException ex) {
             return HttpUtils.badRequest(ex.getMessage());
         } catch (NoSuchElementException ex) {

@@ -1,6 +1,7 @@
 package com.my.selfimprovement.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.my.selfimprovement.util.i18n.UIMessage;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -16,12 +17,12 @@ public class ResponseBody {
     protected Instant timestamp;
     protected HttpStatus status;
     protected int statusCode;
-    protected String message;
+    protected UIMessage message;
     protected String developerMessage;
     protected Map<String, ?> data;
 
     @Builder
-    public ResponseBody(Instant timestamp, HttpStatus status, String message, String developerMessage,
+    public ResponseBody(Instant timestamp, HttpStatus status, UIMessage message, String developerMessage,
                         Map<String, ?> data) {
         this.timestamp = Optional.ofNullable(timestamp).orElseGet(Instant::now);
         this.status = status;
