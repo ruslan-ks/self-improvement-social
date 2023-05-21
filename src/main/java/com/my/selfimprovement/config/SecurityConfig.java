@@ -50,9 +50,8 @@ public class SecurityConfig {
     private final RsaKeyProperties rsaKeys;
 
     private static final String USERS = "/users/**";
-
+    private static final String USER_ACTIVITIES = "/users/activities/**";
     private static final String CATEGORIES = "/categories/**";
-
     private static final String ACTIVITIES = "/activities/**";
 
     @Bean
@@ -110,6 +109,7 @@ public class SecurityConfig {
                                 .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
                         .requestMatchers(HttpMethod.POST, ACTIVITIES)
                                 .hasAnyAuthority(User.Role.ADMIN.name(), User.Role.ROOT.name())
+                        .requestMatchers(HttpMethod.POST, USER_ACTIVITIES).authenticated()
                         .requestMatchers("/login").anonymous()
                         .anyRequest().permitAll()
                 )
