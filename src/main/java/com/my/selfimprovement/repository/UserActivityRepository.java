@@ -1,5 +1,6 @@
 package com.my.selfimprovement.repository;
 
+import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.entity.UserActivity;
 import org.springframework.data.domain.Page;
@@ -13,5 +14,7 @@ public interface UserActivityRepository extends JpaRepository<UserActivity, Long
     Page<UserActivity> findUserActivitiesByUser(User user, Pageable pageable);
 
     long countUserActivitiesByUser(User user);
+
+    boolean existsByActivityAndUser(Activity activity, User user);
 
 }
