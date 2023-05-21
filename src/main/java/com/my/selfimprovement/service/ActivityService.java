@@ -3,6 +3,8 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.UserActivity;
+import com.my.selfimprovement.util.exception.ActivityNotFoundException;
+import com.my.selfimprovement.util.exception.UserNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -16,7 +18,6 @@ public interface ActivityService {
      * @param activityRequest activity data
      * @param authorId activity author id
      * @return newly created activity
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user with specified id does not exist
      * @throws com.my.selfimprovement.util.exception.CategoryNotFoundException if activityRequest contains
      * category id that does not exist
      */
@@ -27,16 +28,12 @@ public interface ActivityService {
 
     Optional<Activity> getById(long id);
 
+    Activity getByIdOrElseThrow(long id) throws ActivityNotFoundException;
+
     long count();
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found by id
-     */
-    Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable);
+    Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable) throws UserNotFoundException;
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found by id
-     */
-    long getUserActivityCount(long userId);
+    long getUserActivityCount(long userId) throws UserNotFoundException;
 
 }

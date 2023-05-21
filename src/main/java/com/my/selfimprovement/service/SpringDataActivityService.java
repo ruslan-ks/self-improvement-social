@@ -8,6 +8,7 @@ import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.entity.UserActivity;
 import com.my.selfimprovement.repository.ActivityRepository;
 import com.my.selfimprovement.repository.UserActivityRepository;
+import com.my.selfimprovement.util.exception.ActivityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +62,12 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     public Optional<Activity> getById(long id) {
         return activityRepository.findById(id);
+    }
+
+    @Override
+    public Activity getByIdOrElseThrow(long id) throws ActivityNotFoundException {
+        return activityRepository.findById(id)
+                .orElseThrow(() -> new ActivityNotFoundException("Activity with id " + id + " not found"));
     }
 
     @Override
