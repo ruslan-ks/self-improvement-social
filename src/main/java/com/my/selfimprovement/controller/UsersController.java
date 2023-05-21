@@ -193,4 +193,16 @@ public class UsersController {
         return ResponseBody.ok("user-activity-count", count);
     }
 
+    @PostMapping("/activities")
+    public ResponseEntity<ResponseBody> addUserActivity(@RequestParam("activityId") long activityId,
+                                                        @AuthenticationPrincipal Jwt jwt) {
+        try {
+            activityService.addUserActivity(activityId, jwtService.getUserId(jwt));
+        } catch (IllegalStateException ex) {
+            log.warn("Failed to add user activity: " + ex.getMessage());
+            return HttpUtils.badRequest(ex.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
+
 }
