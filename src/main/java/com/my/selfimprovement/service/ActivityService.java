@@ -36,4 +36,12 @@ public interface ActivityService {
 
     long getUserActivityCount(long userId) throws UserNotFoundException;
 
+    /**
+     * Add activity to user activities
+     * @throws IllegalStateException if activity is already added
+     */
+    @PreAuthorize("isAuthenticated()")
+    void addUserActivity(long activityId, long userId)
+            throws ActivityNotFoundException, UserNotFoundException, IllegalStateException;
+
 }

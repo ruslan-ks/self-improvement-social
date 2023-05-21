@@ -2,6 +2,7 @@ package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "user_activities")
 @Data
+@NoArgsConstructor
 public class UserActivity implements Serializable {
 
     @Id
@@ -34,6 +36,11 @@ public class UserActivity implements Serializable {
 
     @OneToMany(mappedBy = "userActivity", cascade = CascadeType.ALL)
     private final Set<UserActivityCompletion> completions = new HashSet<>();
+
+    public UserActivity(User user, Activity activity) {
+        this.user = user;
+        this.activity = activity;
+    }
 
     @PrePersist
     private void initStaredAt() {

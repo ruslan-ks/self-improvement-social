@@ -9,6 +9,7 @@ import com.my.selfimprovement.entity.UserActivity;
 import com.my.selfimprovement.repository.ActivityRepository;
 import com.my.selfimprovement.repository.UserActivityRepository;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
+import com.my.selfimprovement.util.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -82,4 +83,16 @@ public class SpringDataActivityService implements ActivityService {
         return userActivityRepository.countUserActivitiesByUser(user);
     }
 
+    @Override
+    public void addUserActivity(long activityId, long userId)
+            throws ActivityNotFoundException, UserNotFoundException, IllegalStateException {
+        Activity activity = getByIdOrElseThrow(activityId);
+        User user = userService.findByIdOrElseThrow(userId);
+        if (userActivityRepository.existsByActivityAndUser(activity, user)) {
+            throw new IllegalStateException("User activity already exists(activity id: " + activityId +
+                    ", user id: " + userId);
+        }
+        var userActivity = new UserActivity(user, activity);
+        userActivityRepository.save(userActivity);
+    }
 }
