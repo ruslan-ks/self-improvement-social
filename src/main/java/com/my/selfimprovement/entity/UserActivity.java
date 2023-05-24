@@ -1,5 +1,6 @@
 package com.my.selfimprovement.entity;
 
+import com.my.selfimprovement.entity.key.UserActivityPK;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,21 +18,19 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserActivity implements Serializable {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @EmbeddedId
+    private UserActivityPK userActivityPK;
 
     @Column(name = "started_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     @Temporal(TemporalType.TIMESTAMP)
     private Instant startedAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @MapsId("userId")   // UserActivityPK.userId
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "activity_id", referencedColumnName = "id")
+    @MapsId("activityId")   // UserActivityPK.activityId
     private Activity activity;
 
     @OneToMany(mappedBy = "userActivity", cascade = CascadeType.ALL)
@@ -50,7 +49,7 @@ public class UserActivity implements Serializable {
     @Override
     public String toString() {
         return "UserActivity{" +
-                "id=" + id +
+                "pk=" + userActivityPK +
                 ", startedAt=" + startedAt +
                 ", user.id=" + user.getId() +
                 ", activity.id=" + activity.getId() +
@@ -63,7 +62,7 @@ public class UserActivity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserActivity that = (UserActivity) o;
-        return id == that.id &&
+        return Objects.equals(userActivityPK, that.userActivityPK) &&
                 Objects.equals(startedAt, that.startedAt) &&
                 Objects.equals(user, that.user) &&
                 Objects.equals(activity, that.activity);
@@ -71,7 +70,7 @@ public class UserActivity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, startedAt, user, activity);
+        return Objects.hash(userActivityPK, startedAt, user, activity);
     }
 
     public Set<UserActivityCompletion> getCompletions() {
