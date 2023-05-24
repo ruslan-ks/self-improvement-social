@@ -23,7 +23,7 @@ public class NewActivityRequestValidator extends ControllerLayerValidator<NewAct
     @Override
     public void validate(Object target, Errors errors) {
         var request = (NewActivityRequest) target;
-        NewSpecificTypeActivityRequestValidator validator = getValidatorForType(request.getActivityType());
+        NewSpecificTypeActivityRequestValidator validator = getValidatorForType(request.getType());
         validator.validate(request, errors);
     }
 

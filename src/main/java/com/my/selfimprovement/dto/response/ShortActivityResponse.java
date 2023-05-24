@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShortActivityResponse {
-    private ActivityType activityType = ActivityType.REGULAR;
+    private ActivityType type = ActivityType.REGULAR;
 
     // Activity properties
     private long id;

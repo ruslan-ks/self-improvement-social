@@ -16,7 +16,7 @@ public class SimpleUserActivityMapper implements UserActivityMapper {
     public ShortUserActivityResponse toShortUserActivityResponse(UserActivity userActivity) {
         ShortActivityResponse activityResponse = activityMapper.toShortActivityResponse(userActivity.getActivity());
         return ShortUserActivityResponse.builder()
-                .activityResponse(activityResponse)
+                .activity(activityResponse)
                 .startedAt(userActivity.getStartedAt())
                 .completionCount(userActivity.getCompletions().size())
                 .build();

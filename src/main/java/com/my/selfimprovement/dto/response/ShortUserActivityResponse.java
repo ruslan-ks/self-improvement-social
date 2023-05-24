@@ -9,6 +9,6 @@ import java.time.Instant;
 @Builder
 public class ShortUserActivityResponse {
     private Instant startedAt;
-    private ShortActivityResponse activityResponse;
+    private ShortActivityResponse activity;
     private long completionCount;
 }
