@@ -13,12 +13,15 @@ import java.util.Objects;
 public class UserActivityCompletion implements Serializable {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_activity_id", referencedColumnName = "id")
+    @JoinColumns(value = {
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            @JoinColumn(name = "activity_id", referencedColumnName = "activity_id")
+    })
     private UserActivity userActivity;
 
     @Column(name = "completed_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
@@ -34,7 +37,6 @@ public class UserActivityCompletion implements Serializable {
     public String toString() {
         return "UserActivityCompletion{" +
                 "id=" + id +
-                ", userActivity.id=" + userActivity.getId() +
                 ", completedAt=" + completedAt +
                 '}';
     }
