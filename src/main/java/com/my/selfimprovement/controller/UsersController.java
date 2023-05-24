@@ -212,4 +212,13 @@ public class UsersController {
         return ResponseBody.ok("userActivity", response);
     }
 
+    @Operation(summary = "Get user activities details including completions")
+    @GetMapping("/{userId}/activities/completions")
+    public ResponseBody getUserActivitiesCompletions(@PathVariable long userId, Pageable pageable) {
+        List<DetailedUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
+                .map(userActivityMapper::toDetailedUserActivityResponse)
+                .toList();
+        return ResponseBody.ok("userActivities", userActivities);
+    }
+
 }
