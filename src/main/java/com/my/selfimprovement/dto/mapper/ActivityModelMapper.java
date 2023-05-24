@@ -41,7 +41,7 @@ public class ActivityModelMapper implements ActivityMapper {
                 .collect(Collectors.toSet());
         response.setUserIds(userIds);
         ActivityType type = typeFor(activity);
-        response.setActivityType(type);
+        response.setType(type);
         return response;
     }
 
@@ -50,7 +50,7 @@ public class ActivityModelMapper implements ActivityMapper {
         ShortActivityResponse response = modelMapper.map(activity, ShortActivityResponse.class);
         response.setCategoryIds(toCategoryIdSet(activity.getCategories()));
         response.setUserCount(activity.getUserActivities().size());
-        response.setActivityType(typeFor(activity));
+        response.setType(typeFor(activity));
         return response;
     }
 

@@ -184,7 +184,7 @@ public class UsersController {
         List<ShortUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
                 .map(userActivityMapper::toShortUserActivityResponse)
                 .toList();
-        return ResponseBody.ok("user-activities", userActivities);
+        return ResponseBody.ok("userActivities", userActivities);
     }
 
     @GetMapping("/{userId}/activities/count")
