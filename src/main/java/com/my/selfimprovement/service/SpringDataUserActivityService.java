@@ -27,19 +27,19 @@ public class SpringDataUserActivityService implements UserActivityService {
     private final ActivityService activityService;
 
     @Override
-    public Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable) {
+    public Stream<UserActivity> getPage(long userId, Pageable pageable) {
         User user = userService.findByIdOrElseThrow(userId);
         return userActivityRepository.findUserActivitiesByUser(user, pageable).stream();
     }
 
     @Override
-    public long getUserActivityCount(long userId) {
+    public long count(long userId) {
         User user = userService.findByIdOrElseThrow(userId);
         return userActivityRepository.countUserActivitiesByUser(user);
     }
 
     @Override
-    public void addUserActivity(long activityId, long userId)
+    public void add(long activityId, long userId)
             throws ActivityNotFoundException, UserNotFoundException, IllegalStateException {
         Activity activity = activityService.getByIdOrElseThrow(activityId);
         User user = userService.findByIdOrElseThrow(userId);
@@ -52,7 +52,7 @@ public class SpringDataUserActivityService implements UserActivityService {
     }
 
     @Override
-    public UserActivity getUserActivity(long userId, long activityId)
+    public UserActivity get(long userId, long activityId)
             throws UserNotFoundException, ActivityNotFoundException {
         return userActivityRepository.findById(new UserActivityPK(userId, activityId))
                 .orElseThrow(() -> new UserActivityNotFoundException("User activity not found. userId: " + userId +

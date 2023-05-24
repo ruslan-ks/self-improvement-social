@@ -10,9 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.stream.Stream;
 
 public interface UserActivityService {
-    Stream<UserActivity> getUserActivitiesPage(long userId, Pageable pageable) throws UserNotFoundException;
 
-    long getUserActivityCount(long userId) throws UserNotFoundException;
+    Stream<UserActivity> getPage(long userId, Pageable pageable) throws UserNotFoundException;
+
+    long count(long userId) throws UserNotFoundException;
 
     /**
      * Add activity to user activities
@@ -20,8 +21,9 @@ public interface UserActivityService {
      * @throws IllegalStateException if activity is already added
      */
     @PreAuthorize("isAuthenticated()")
-    void addUserActivity(long activityId, long userId)
+    void add(long activityId, long userId)
             throws ActivityNotFoundException, UserNotFoundException, IllegalStateException;
 
-    UserActivity getUserActivity(long userId, long activityId) throws UserActivityNotFoundException;
+    UserActivity get(long userId, long activityId) throws UserActivityNotFoundException;
+
 }
