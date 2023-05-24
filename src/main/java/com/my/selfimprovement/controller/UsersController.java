@@ -8,7 +8,7 @@ import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.entity.UserActivity;
-import com.my.selfimprovement.service.ActivityService;
+import com.my.selfimprovement.service.UserActivityService;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
@@ -41,7 +41,7 @@ public class UsersController {
 
     private final UserService userService;
 
-    private final ActivityService activityService;
+    private final UserActivityService userActivityService;
 
     private final JwtService jwtService;
 
@@ -180,7 +180,7 @@ public class UsersController {
     @Operation(summary = "Get user activities(activities user is going through)")
     @GetMapping("/{userId}/activities")
     public ResponseBody getUserActivities(@PathVariable long userId, Pageable pageable) {
-        List<ShortUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
+        List<ShortUserActivityResponse> userActivities = userActivityService.getUserActivitiesPage(userId, pageable)
                 .map(userActivityMapper::toShortUserActivityResponse)
                 .toList();
         return ResponseBody.ok("userActivities", userActivities);
@@ -188,7 +188,7 @@ public class UsersController {
 
     @GetMapping("/{userId}/activities/count")
     public ResponseBody getUserActivityCount(@PathVariable long userId) {
-        long count = activityService.getUserActivityCount(userId);
+        long count = userActivityService.getUserActivityCount(userId);
         return ResponseBody.ok("user-activity-count", count);
     }
 
@@ -196,7 +196,7 @@ public class UsersController {
     public ResponseEntity<ResponseBody> addUserActivity(@RequestParam("activityId") long activityId,
                                                         @AuthenticationPrincipal Jwt jwt) {
         try {
-            activityService.addUserActivity(activityId, jwtService.getUserId(jwt));
+            userActivityService.addUserActivity(activityId, jwtService.getUserId(jwt));
         } catch (IllegalStateException ex) {
             log.warn("Failed to add user activity: " + ex.getMessage());
             return HttpUtils.badRequest(ex.getMessage());
@@ -207,7 +207,7 @@ public class UsersController {
     @Operation(summary = "Get user activity details including completions")
     @GetMapping("/{userId}/activities/{activityId}")
     public ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
-        UserActivity userActivity = activityService.getUserActivity(userId, activityId);
+        UserActivity userActivity = userActivityService.getUserActivity(userId, activityId);
         DetailedUserActivityResponse response = userActivityMapper.toDetailedUserActivityResponse(userActivity);
         return ResponseBody.ok("userActivity", response);
     }
@@ -215,7 +215,7 @@ public class UsersController {
     @Operation(summary = "Get user activities details including completions")
     @GetMapping("/{userId}/activities/completions")
     public ResponseBody getUserActivitiesCompletions(@PathVariable long userId, Pageable pageable) {
-        List<DetailedUserActivityResponse> userActivities = activityService.getUserActivitiesPage(userId, pageable)
+        List<DetailedUserActivityResponse> userActivities = userActivityService.getUserActivitiesPage(userId, pageable)
                 .map(userActivityMapper::toDetailedUserActivityResponse)
                 .toList();
         return ResponseBody.ok("userActivities", userActivities);
