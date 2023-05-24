@@ -6,9 +6,11 @@ import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.Category;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.entity.UserActivity;
+import com.my.selfimprovement.entity.key.UserActivityPK;
 import com.my.selfimprovement.repository.ActivityRepository;
 import com.my.selfimprovement.repository.UserActivityRepository;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
+import com.my.selfimprovement.util.exception.UserActivityNotFoundException;
 import com.my.selfimprovement.util.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,4 +97,13 @@ public class SpringDataActivityService implements ActivityService {
         var userActivity = new UserActivity(user, activity);
         userActivityRepository.save(userActivity);
     }
+
+    @Override
+    public UserActivity getUserActivity(long userId, long activityId)
+            throws UserNotFoundException, ActivityNotFoundException {
+        return userActivityRepository.findById(new UserActivityPK(userId, activityId))
+                .orElseThrow(() -> new UserActivityNotFoundException("User activity not found. userId: " + userId +
+                        ", activityId: " + activityId));
+    }
+
 }

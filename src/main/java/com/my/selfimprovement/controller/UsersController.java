@@ -3,12 +3,11 @@ package com.my.selfimprovement.controller;
 import com.my.selfimprovement.dto.mapper.UserActivityMapper;
 import com.my.selfimprovement.dto.mapper.UserMapper;
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
-import com.my.selfimprovement.dto.response.DetailedUserResponse;
-import com.my.selfimprovement.dto.response.ShortUserActivityResponse;
-import com.my.selfimprovement.dto.response.ShortUserResponse;
-import com.my.selfimprovement.dto.response.ResponseBody;
+import com.my.selfimprovement.dto.response.*;
 import com.my.selfimprovement.dto.request.UserRegistrationRequest;
+import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.entity.User;
+import com.my.selfimprovement.entity.UserActivity;
 import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
@@ -203,6 +202,14 @@ public class UsersController {
             return HttpUtils.badRequest(ex.getMessage());
         }
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Get user activity details including completions")
+    @GetMapping("/{userId}/activities/{activityId}")
+    public ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
+        UserActivity userActivity = activityService.getUserActivity(userId, activityId);
+        DetailedUserActivityResponse response = userActivityMapper.toDetailedUserActivityResponse(userActivity);
+        return ResponseBody.ok("userActivity", response);
     }
 
 }

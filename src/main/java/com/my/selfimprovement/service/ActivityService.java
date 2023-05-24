@@ -44,4 +44,6 @@ public interface ActivityService {
     void addUserActivity(long activityId, long userId)
             throws ActivityNotFoundException, UserNotFoundException, IllegalStateException;
 
+    UserActivity getUserActivity(long userId, long activityId) throws UserNotFoundException, ActivityNotFoundException;
+
 }
