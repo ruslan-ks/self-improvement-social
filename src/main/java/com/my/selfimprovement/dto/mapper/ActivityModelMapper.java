@@ -23,7 +23,7 @@ public class ActivityModelMapper implements ActivityMapper {
 
     @Override
     public Activity toActivity(NewActivityRequest newActivityRequest) {
-        return switch (newActivityRequest.getActivityType()) {
+        return switch (newActivityRequest.getType()) {
             case REGULAR -> modelMapper.map(newActivityRequest, Activity.class);
             case LIMITED_COMPLETIONS -> modelMapper.map(newActivityRequest, LimitedCompletionsActivity.class);
             case PERIODICAL_LIMITED_COMPLETIONS ->

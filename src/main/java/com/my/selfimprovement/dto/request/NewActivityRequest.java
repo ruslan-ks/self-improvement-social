@@ -33,7 +33,7 @@ public class NewActivityRequest {
     private Set<Long> categoryIds;
 
     @NotNull
-    private ActivityType activityType = ActivityType.REGULAR;
+    private ActivityType type = ActivityType.REGULAR;
 
     @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     @Max(value = 9999, message = "{valid.limitedCompletionsActivity.completionsLimit}")
