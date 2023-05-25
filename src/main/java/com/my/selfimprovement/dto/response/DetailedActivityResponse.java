@@ -3,7 +3,6 @@ package com.my.selfimprovement.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.my.selfimprovement.dto.request.ActivityType;
 
-import com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity;
 import lombok.Data;
 
 import java.util.Set;
@@ -30,5 +29,5 @@ public class DetailedActivityResponse {
     private Long completionsLimit;
 
     // PeriodicalLimitedCompletionsActivity properties
-    private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
+    private long periodDurationMinutes;
 }

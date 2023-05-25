@@ -1,6 +1,5 @@
 package com.my.selfimprovement.dto.request;
 
-import com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity;
 import com.my.selfimprovement.util.validation.activity.NewActivityRequestValidator;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -35,10 +34,14 @@ public class NewActivityRequest {
     @NotNull
     private ActivityType type = ActivityType.REGULAR;
 
+    // LimitedCompletionsActivity field
     @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     @Max(value = 9999, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     private Integer completionsLimit;
 
-    private PeriodicalLimitedCompletionsActivity.PeriodType periodType;
+    // PeriodicallyLimitedCompletionsActivity field
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
+    @Max(value = 99_999, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
+    private long periodDurationMinutes;
 
 }

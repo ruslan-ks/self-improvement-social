@@ -59,8 +59,9 @@ DROP TABLE IF EXISTS periodical_limited_completions_activities CASCADE;
 CREATE TABLE periodical_limited_completions_activities
 (
     activity_id bigint PRIMARY KEY,
-    period_type text NOT NULL
-        CONSTRAINT not_empty_period_type CHECK (length(period_type) > 0),
+    period_duration_minutes bigint NOT NULL DEFAULT 60
+        CONSTRAINT valid_period_duration_minutes
+            CHECK (period_duration_minutes > 0 and period_duration_minutes < 100000),
     FOREIGN KEY (activity_id) REFERENCES limited_completions_activities (activity_id)
         ON DELETE CASCADE
 );
@@ -119,8 +120,8 @@ VALUES ('Coding', 'Write code', 60, 1),
 INSERT INTO limited_completions_activities(activity_id, completions_limit)
 VALUES (1, 1);
 
-INSERT INTO periodical_limited_completions_activities(activity_id, period_type)
-VALUES (1, 'DAILY');
+INSERT INTO periodical_limited_completions_activities(activity_id, period_duration_minutes)
+VALUES (1, 60 * 24);
 
 INSERT INTO user_activities(user_id, activity_id)
 VALUES (1, 1),

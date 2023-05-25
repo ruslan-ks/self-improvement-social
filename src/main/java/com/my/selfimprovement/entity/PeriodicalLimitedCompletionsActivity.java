@@ -1,7 +1,8 @@
 package com.my.selfimprovement.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 import java.util.Objects;
@@ -12,27 +13,21 @@ import java.util.Objects;
 @Data
 public class PeriodicalLimitedCompletionsActivity extends LimitedCompletionsActivity {
 
-    public enum PeriodType {
-        DAILY,
-        WEEKLY,
-        MONTHLY
-    }
-
     @Id
     @Column(name = "activity_id")
     private long id;
 
-    @Column(name = "period_type")
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
-    private PeriodType periodType;
+    @Column(name = "period_duration_minutes")
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
+    @Max(value = 99_999, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
+    private long periodDurationMinutes;
 
     @Override
     public String toString() {
         return "PeriodicalLimitedCompletionsActivity{" +
                 "(super=" + super.toString() +
-                ")id=" + id +
-                ", periodType=" + periodType +
+                ") id=" + id +
+                ", periodDurationMinutes=" + periodDurationMinutes +
                 '}';
     }
 
@@ -42,12 +37,12 @@ public class PeriodicalLimitedCompletionsActivity extends LimitedCompletionsActi
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         var that = (PeriodicalLimitedCompletionsActivity) o;
-        return id == that.id && periodType == that.periodType;
+        return id == that.id && periodDurationMinutes == that.periodDurationMinutes;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id, periodType);
+        return Objects.hash(super.hashCode(), id, periodDurationMinutes);
     }
 
 }
