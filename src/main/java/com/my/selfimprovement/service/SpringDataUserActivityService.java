@@ -39,6 +39,7 @@ public class SpringDataUserActivityService implements UserActivityService {
     }
 
     @Override
+    @Transactional
     public void add(long activityId, long userId)
             throws ActivityNotFoundException, UserNotFoundException, IllegalStateException {
         Activity activity = activityService.getByIdOrElseThrow(activityId);

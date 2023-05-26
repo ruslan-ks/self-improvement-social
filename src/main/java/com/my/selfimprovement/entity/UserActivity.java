@@ -39,6 +39,7 @@ public class UserActivity implements Serializable {
     public UserActivity(User user, Activity activity) {
         this.user = user;
         this.activity = activity;
+        this.userActivityPK = new UserActivityPK(user.getId(), activity.getId());
     }
 
     @PrePersist
