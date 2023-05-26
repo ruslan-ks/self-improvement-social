@@ -29,5 +29,5 @@ public class DetailedActivityResponse {
     private Long completionsLimit;
 
     // PeriodicalLimitedCompletionsActivity properties
-    private long periodDurationMinutes;
+    private Long periodDurationMinutes;
 }
