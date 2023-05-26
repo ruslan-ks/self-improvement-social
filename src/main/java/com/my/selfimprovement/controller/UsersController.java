@@ -204,6 +204,11 @@ public class UsersController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/activities/{activityId}")
+    public void deleteUserActivity(@PathVariable long activityId, @AuthenticationPrincipal Jwt jwt) {
+        userActivityService.delete(jwtService.getUserId(jwt), activityId);
+    }
+
     @Operation(summary = "Get user activity details including completions")
     @GetMapping("/{userId}/activities/{activityId}")
     public ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
