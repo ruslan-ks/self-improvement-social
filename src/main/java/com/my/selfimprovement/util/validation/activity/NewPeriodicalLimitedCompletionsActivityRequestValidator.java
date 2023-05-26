@@ -8,11 +8,11 @@ import org.springframework.validation.Errors;
 
 @Component
 @RequiredArgsConstructor
-public class PeriodicalLimitedCompletionsActivityValidator implements NewSpecificTypeActivityRequestValidator {
+public class NewPeriodicalLimitedCompletionsActivityRequestValidator implements NewSpecificTypeActivityRequestValidator {
 
     private final Translator translator;
 
-    private final LimitedCompletionsActivityValidator limitedCompletionsActivityValidator;
+    private final NewLimitedCompletionsActivityRequestValidator limitedCompletionsActivityValidator;
 
     private static final String DURATION_NOT_NULL = "valid.limitedCompletionsActivity.periodDurationMinutes.notNull";
 

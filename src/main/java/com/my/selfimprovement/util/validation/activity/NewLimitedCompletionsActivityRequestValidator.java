@@ -8,7 +8,7 @@ import org.springframework.validation.Errors;
 
 @Component
 @RequiredArgsConstructor
-public class LimitedCompletionsActivityValidator implements NewSpecificTypeActivityRequestValidator {
+public class NewLimitedCompletionsActivityRequestValidator implements NewSpecificTypeActivityRequestValidator {
 
     private static final String LIMIT_NOT_NULL = "valid.limitedCompletionsActivity.completionsLimit.notNull";
 
