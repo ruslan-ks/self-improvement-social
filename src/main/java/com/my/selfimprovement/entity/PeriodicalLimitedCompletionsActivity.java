@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 @Entity
@@ -45,6 +47,22 @@ public class PeriodicalLimitedCompletionsActivity extends LimitedCompletionsActi
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), id, periodDurationMinutes);
+    }
+
+    @Override
+    public boolean mayBeCompleted(UserActivity userActivity) {
+        long secondsSinceStart = Instant.now().getEpochSecond() - userActivity.getStartedAt().getEpochSecond();
+        long minutesSinceStart = secondsSinceStart / 60;
+        long passedPeriodsCount = minutesSinceStart / periodDurationMinutes;
+        long passedPeriodsDuration = passedPeriodsCount * periodDurationMinutes;
+        Instant currentPeriodStartedAt = userActivity.getStartedAt().plus(passedPeriodsDuration, ChronoUnit.MINUTES);
+
+        long currentPeriodCompletionsCount = userActivity.getCompletions().stream()
+                .map(UserActivityCompletion::getCompletedAt)
+                .filter(currentPeriodStartedAt::isBefore)
+                .count();
+
+        return currentPeriodCompletionsCount < getCompletionsLimit();
     }
 
 }

@@ -77,6 +77,17 @@ public class Activity implements Serializable {
         return Objects.hash(id, name, description, minutesRequired, author, categories);
     }
 
+    /**
+     * Checks if activity completion is allowed based on completions made.
+     * UserActivity that has never been completed is always allowed to be completed at least once.
+     * @param userActivity user activity data
+     * @return true if completion is allowed
+     */
+    @SuppressWarnings("unused")
+    public boolean mayBeCompleted(UserActivity userActivity) {
+        return true;
+    }
+
     public Set<Category> getCategories() {
         return Collections.unmodifiableSet(categories);
     }

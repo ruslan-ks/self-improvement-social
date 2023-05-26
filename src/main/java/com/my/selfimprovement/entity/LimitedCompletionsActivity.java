@@ -51,4 +51,9 @@ public class LimitedCompletionsActivity extends Activity {
         return Objects.hash(super.hashCode(), id, completionsLimit);
     }
 
+    @Override
+    public boolean mayBeCompleted(UserActivity userActivity) {
+        return completionsLimit > userActivity.getCompletions().size();
+    }
+
 }
