@@ -16,8 +16,6 @@ public interface UserActivityService {
     long count(long userId) throws UserNotFoundException;
 
     /**
-     * Add activity to user activities
-     *
      * @throws IllegalStateException if activity is already added
      */
     @PreAuthorize("isAuthenticated()")
@@ -27,6 +25,15 @@ public interface UserActivityService {
     @PreAuthorize("isAuthenticated()")
     void delete(long userId, long activityId) throws UserActivityNotFoundException;
 
-    UserActivity get(long userId, long activityId) throws UserActivityNotFoundException;
+    UserActivity getByKeyOrElseThrow(long userId, long activityId) throws UserActivityNotFoundException;
+
+    /**
+     * @throws IllegalStateException if activty completion not allowed.
+     * @see com.my.selfimprovement.entity.Activity#mayBeCompleted(UserActivity)
+     * @see com.my.selfimprovement.entity.LimitedCompletionsActivity#mayBeCompleted(UserActivity)
+     * @see com.my.selfimprovement.entity.PeriodicalLimitedCompletionsActivity#mayBeCompleted(UserActivity)
+     */
+    @PreAuthorize("isAuthenticated()")
+    void addCompletion(long userId, long activityId) throws UserActivityNotFoundException, IllegalStateException;
 
 }

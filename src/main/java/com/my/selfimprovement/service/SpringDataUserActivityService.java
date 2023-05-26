@@ -3,6 +3,7 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.entity.UserActivity;
+import com.my.selfimprovement.entity.UserActivityCompletion;
 import com.my.selfimprovement.entity.key.UserActivityPK;
 import com.my.selfimprovement.repository.UserActivityRepository;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
@@ -55,16 +56,28 @@ public class SpringDataUserActivityService implements UserActivityService {
     @Override
     @Transactional
     public void delete(long userId, long activityId) throws UserActivityNotFoundException {
-        UserActivity userActivity = get(userId, activityId);
+        UserActivity userActivity = getByKeyOrElseThrow(userId, activityId);
         userActivityRepository.delete(userActivity);
     }
 
     @Override
-    public UserActivity get(long userId, long activityId)
-            throws UserNotFoundException, ActivityNotFoundException {
+    public UserActivity getByKeyOrElseThrow(long userId, long activityId) throws UserActivityNotFoundException {
         return userActivityRepository.findById(new UserActivityPK(userId, activityId))
                 .orElseThrow(() -> new UserActivityNotFoundException("User activity not found. userId: " + userId +
                         ", activityId: " + activityId));
+    }
+
+    @Override
+    @Transactional
+    public void addCompletion(long userId, long activityId) throws UserActivityNotFoundException {
+        UserActivity userActivity = getByKeyOrElseThrow(userId, activityId);
+        Activity activity = userActivity.getActivity();
+        if (!activity.mayBeCompleted(userActivity)) {
+            throw new IllegalStateException("Activity completion not allowed");
+        }
+        var completion = new UserActivityCompletion();
+        completion.setUserActivity(userActivity);
+        userActivity.addCompletion(completion);
     }
 
 }
