@@ -3,6 +3,7 @@ package com.my.selfimprovement.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class LimitedCompletionsActivity extends Activity {
     private long id;
 
     @Column(name = "completions_limit")
+    @NotNull(message = "{valid.limitedCompletionsActivity.completionsLimit.notNull}")
     @Min(value = 1, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     @Max(value = 9999, message = "{valid.limitedCompletionsActivity.completionsLimit}")
     private int completionsLimit;

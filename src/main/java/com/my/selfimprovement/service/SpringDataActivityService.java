@@ -33,6 +33,7 @@ public class SpringDataActivityService implements ActivityService {
     private final ActivityMapper activityMapper;
 
     @Override
+    @Transactional
     public Activity create(NewActivityRequest activityRequest, long authorId) {
         User author = userService.findByIdOrElseThrow(authorId);
         Set<Category> categories = activityRequest.getCategoryIds().stream()

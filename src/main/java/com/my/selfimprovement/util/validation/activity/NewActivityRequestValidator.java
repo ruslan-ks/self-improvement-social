@@ -1,19 +1,16 @@
 package com.my.selfimprovement.util.validation.activity;
 
-import com.my.selfimprovement.dto.request.ActivityType;
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.util.validation.abstracts.ControllerLayerValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 public class NewActivityRequestValidator extends ControllerLayerValidator<NewActivityRequest> {
 
-    private final Map<ActivityType, NewSpecificTypeActivityRequestValidator> validatorMap;
+    private final NewSpecificTypeActivityRequestValidatorResolver validatorResolver;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -23,12 +20,8 @@ public class NewActivityRequestValidator extends ControllerLayerValidator<NewAct
     @Override
     public void validate(Object target, Errors errors) {
         var request = (NewActivityRequest) target;
-        NewSpecificTypeActivityRequestValidator validator = getValidatorForType(request.getType());
+        NewSpecificTypeActivityRequestValidator validator = validatorResolver.getValidatorFor(request);
         validator.validate(request, errors);
-    }
-
-    private NewSpecificTypeActivityRequestValidator getValidatorForType(ActivityType type) {
-        return validatorMap.get(type);
     }
 
 }
