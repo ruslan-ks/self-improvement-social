@@ -40,8 +40,8 @@ public class NewActivityRequest {
     private Integer completionsLimit;
 
     // PeriodicallyLimitedCompletionsActivity field
-    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
     @Max(value = 99_999, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
-    private long periodDurationMinutes;
+    private Long periodDurationMinutes;
 
 }
