@@ -66,7 +66,7 @@ public class UserActivityController {
     @Operation(summary = "Get user activity details including completions")
     @GetMapping("/{userId}/activities/{activityId}")
     public ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
-        UserActivity userActivity = userActivityService.get(userId, activityId);
+        UserActivity userActivity = userActivityService.getByKeyOrElseThrow(userId, activityId);
         DetailedUserActivityResponse response = userActivityMapper.toDetailedUserActivityResponse(userActivity);
         return ResponseBody.ok("userActivity", response);
     }
@@ -80,5 +80,16 @@ public class UserActivityController {
         return ResponseBody.ok("userActivities", userActivities);
     }
 
+    @Operation(summary = "Add user activity completion")
+    @PostMapping("/activities/{activityId}/completions")
+    public ResponseEntity<ResponseBody> addUserActivityCompletion(@PathVariable long activityId, @AuthenticationPrincipal Jwt jwt) {
+        long userId = jwtService.getUserId(jwt);
+        try {
+            userActivityService.addCompletion(userId, activityId);
+        } catch (IllegalStateException ex) {
+            return HttpUtils.badRequest(ex.getMessage());
+        }
+        return ResponseEntity.ok().build();
+    }
 
 }
