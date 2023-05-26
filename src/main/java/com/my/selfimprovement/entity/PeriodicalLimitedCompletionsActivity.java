@@ -3,6 +3,7 @@ package com.my.selfimprovement.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.Objects;
@@ -18,7 +19,8 @@ public class PeriodicalLimitedCompletionsActivity extends LimitedCompletionsActi
     private long id;
 
     @Column(name = "period_duration_minutes")
-    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodType.notEmpty}")
+    @NotNull(message = "{valid.limitedCompletionsActivity.periodDurationMinutes.notNull}")
+    @Min(value = 1, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
     @Max(value = 99_999, message = "{valid.limitedCompletionsActivity.periodDurationMinutes}")
     private long periodDurationMinutes;
 
