@@ -53,6 +53,13 @@ public class SpringDataUserActivityService implements UserActivityService {
     }
 
     @Override
+    @Transactional
+    public void delete(long userId, long activityId) throws UserActivityNotFoundException {
+        UserActivity userActivity = get(userId, activityId);
+        userActivityRepository.delete(userActivity);
+    }
+
+    @Override
     public UserActivity get(long userId, long activityId)
             throws UserNotFoundException, ActivityNotFoundException {
         return userActivityRepository.findById(new UserActivityPK(userId, activityId))

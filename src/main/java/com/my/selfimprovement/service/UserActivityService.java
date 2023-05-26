@@ -24,6 +24,9 @@ public interface UserActivityService {
     void add(long activityId, long userId)
             throws ActivityNotFoundException, UserNotFoundException, IllegalStateException;
 
+    @PreAuthorize("isAuthenticated()")
+    void delete(long userId, long activityId) throws UserActivityNotFoundException;
+
     UserActivity get(long userId, long activityId) throws UserActivityNotFoundException;
 
 }
