@@ -3,6 +3,7 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.dto.request.NewActivityRequest;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
+import com.my.selfimprovement.util.exception.CategoryNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -20,7 +21,7 @@ public interface ActivityService {
      * category id that does not exist
      */
     @PreAuthorize("isAuthenticated()")
-    Activity create(NewActivityRequest activityRequest, long authorId);
+    Activity create(NewActivityRequest activityRequest, long authorId) throws CategoryNotFoundException;
 
     Stream<Activity> getPage(Pageable pageable);
 

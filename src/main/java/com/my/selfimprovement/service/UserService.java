@@ -3,6 +3,9 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.util.LoadedFile;
+import com.my.selfimprovement.util.exception.AvatarNotFoundException;
+import com.my.selfimprovement.util.exception.FileException;
+import com.my.selfimprovement.util.exception.UserNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,65 +34,44 @@ public interface UserService {
 
     Optional<User> findById(long userId);
 
-    /**
-     * Returns user with specified id, otherwise throws exception
-     * @param userId user id
-     * @return found user
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user with this id does not exist
-     */
-    User findByIdOrElseThrow(long userId);
+    User findByIdOrElseThrow(long userId) throws UserNotFoundException;
 
     /**
      * Saves {@code file} and assigns file name to user avatar field
      * @param file name of file to be set
      * @param userId user id
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
      * @throws com.my.selfimprovement.util.exception.FileException if file cannot be saved as defined
      * by {@link FileService#saveToUploads(MultipartFile, long, Predicate)}
      */
     @PreAuthorize("isAuthenticated()")
-    void setAvatar(MultipartFile file, long userId);
+    void setAvatar(MultipartFile file, long userId) throws UserNotFoundException, FileException;
 
     /**
      * Returns user avatar LoadedFile if one is present
      * @param userId user id
      * @return Optional containing LoadedFile which represents user avatar
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
      * @throws com.my.selfimprovement.util.exception.FileException if file cannot be read as defined
      * by {@link FileService#getLoadedFile(String)}
      */
-    Optional<LoadedFile> getAvatar(long userId);
+    Optional<LoadedFile> getAvatar(long userId) throws UserNotFoundException, FileException;
 
     /**
      * Removes avatar if one is present
      * @param userId user id
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user is not found in the db
      * @throws com.my.selfimprovement.util.exception.AvatarNotFoundException if user.avatar is null
      * @throws com.my.selfimprovement.util.exception.FileException if file cannot be removed as defined
      * by {@link FileService#removeFromUploads(String)}
      */
     @PreAuthorize("isAuthenticated()")
-    void removeAvatar(long userId);
+    void removeAvatar(long userId) throws UserNotFoundException, AvatarNotFoundException, FileException;
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
-     */
-    long getFollowersCount(long userId);
+    long getFollowersCount(long userId) throws UserNotFoundException;
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
-     */
-    Stream<User> getFollowersPage(long userId, Pageable pageable);
+    Stream<User> getFollowersPage(long userId, Pageable pageable) throws UserNotFoundException;
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
-     */
-    long getFollowingsCount(long userId);
+    long getFollowingsCount(long userId) throws UserNotFoundException;
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.UserNotFoundException if user cannot be found in db
-     */
-    Stream<User> getFollowingsPage(long userId, Pageable pageable);
+    Stream<User> getFollowingsPage(long userId, Pageable pageable) throws UserNotFoundException;
 
     /**
      * Adds following to user followings
@@ -97,7 +79,7 @@ public interface UserService {
      * @param newFollowerId follower to be added
      * @throws IllegalArgumentException if userId == newFollowerId
      */
-    void addFollower(long userId, long newFollowerId);
+    void addFollower(long userId, long newFollowerId) throws UserNotFoundException;
 
     /**
      * Removes user with id {@code userId} from followers of user with id {@code followerId}

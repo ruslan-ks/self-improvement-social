@@ -1,6 +1,7 @@
 package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.entity.Category;
+import com.my.selfimprovement.util.exception.CategoryNotFoundException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
@@ -11,21 +12,13 @@ public interface CategoryService {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'ROOT')")
     Category create(String categoryName);
 
-    /**
-     * Removes category
-     * @param categoryId category to remove id
-     * @throws com.my.selfimprovement.util.exception.CategoryNotFoundException if category with specified id not found
-     */
     @PreAuthorize("hasAnyAuthority('ADMIN', 'ROOT')")
-    void remove(long categoryId);
+    void remove(long categoryId) throws CategoryNotFoundException;
 
     List<Category> getAll();
 
     Optional<Category> getByName(String name);
 
-    /**
-     * @throws com.my.selfimprovement.util.exception.CategoryNotFoundException if category with specified id not found
-     */
-    Category getByIdOrElseThrow(long id);
+    Category getByIdOrElseThrow(long id) throws CategoryNotFoundException;
 
 }
