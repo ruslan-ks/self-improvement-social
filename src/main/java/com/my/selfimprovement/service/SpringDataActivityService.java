@@ -35,7 +35,7 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     @Transactional
     public Activity create(NewActivityRequest activityRequest, long authorId) {
-        User author = userService.findByIdOrElseThrow(authorId);
+        User author = userService.getByIdOrElseThrow(authorId);
         Set<Category> categories = activityRequest.getCategoryIds().stream()
                 .map(categoryService::getByIdOrElseThrow)
                 .collect(Collectors.toSet());

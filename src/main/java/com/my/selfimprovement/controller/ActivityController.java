@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/activities")
 @RequiredArgsConstructor
 @Slf4j
-public class ActivitiesController {
+public class ActivityController {
 
     private final ActivityMapper activityMapper;
 

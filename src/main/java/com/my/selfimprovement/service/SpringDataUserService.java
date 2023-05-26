@@ -38,12 +38,12 @@ public class SpringDataUserService implements UserService {
     private static final Set<MediaType> allowedAvatarMediaTypes = Set.of(MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG);
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<User> getByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
     @Override
-    public Stream<User> findActiveUsersPage(Pageable pageable) {
+    public Stream<User> getActiveUsersPage(Pageable pageable) {
         return userRepository.findByStatus(User.Status.ACTIVE, pageable).stream();
     }
 
@@ -57,7 +57,7 @@ public class SpringDataUserService implements UserService {
     @Override
     @Transactional
     public User update(long userId, UserUpdateRequest userUpdateRequest) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         user.setName(userUpdateRequest.name());
         user.setSurname(userUpdateRequest.surname());
         user.setBirthday(userUpdateRequest.birthday());
@@ -70,12 +70,7 @@ public class SpringDataUserService implements UserService {
     }
 
     @Override
-    public Optional<User> findById(long userId) {
-        return userRepository.findById(userId);
-    }
-
-    @Override
-    public User findByIdOrElseThrow(long userId) {
+    public User getByIdOrElseThrow(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found. User id: " + userId));
     }
@@ -83,7 +78,7 @@ public class SpringDataUserService implements UserService {
     @Override
     @Transactional
     public void setAvatar(MultipartFile file, long userId) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         String fileName = fileService.saveToUploads(file, userId, allowedAvatarMediaTypes::contains);
         try {
             String oldAvatarFileName = user.getAvatarFileName();
@@ -100,7 +95,7 @@ public class SpringDataUserService implements UserService {
 
     @Override
     public Optional<LoadedFile> getAvatar(long userId) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         return Optional.ofNullable(user.getAvatarFileName())
                 .map(fileService::getLoadedFile);
     }
@@ -108,7 +103,7 @@ public class SpringDataUserService implements UserService {
     @Override
     @Transactional
     public void removeAvatar(long userId) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         String avatarFileName = user.getAvatarFileName();
         if (avatarFileName == null) {
             throw new AvatarNotFoundException("User with id " + userId + " has no avatar");
@@ -119,25 +114,25 @@ public class SpringDataUserService implements UserService {
 
     @Override
     public long getFollowersCount(long userId) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         return user.getFollowers().size();
     }
 
     @Override
     public Stream<User> getFollowersPage(long userId, Pageable pageable) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         return userRepository.findByFollowingsContaining(user, pageable).stream();
     }
 
     @Override
     public long getFollowingsCount(long userId) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         return user.getFollowings().size();
     }
 
     @Override
     public Stream<User> getFollowingsPage(long userId, Pageable pageable) {
-        User user = findByIdOrElseThrow(userId);
+        User user = getByIdOrElseThrow(userId);
         return userRepository.findByFollowersContaining(user, pageable).stream();
     }
 
@@ -148,8 +143,8 @@ public class SpringDataUserService implements UserService {
             throw new IllegalArgumentException("Cannot add follower: illegal args: userId == newFollowerId: " +
                     userId);
         }
-        User user = findByIdOrElseThrow(userId);
-        User newFollower = findByIdOrElseThrow(newFollowerId);
+        User user = getByIdOrElseThrow(userId);
+        User newFollower = getByIdOrElseThrow(newFollowerId);
         user.addFollower(newFollower);
     }
 
@@ -160,8 +155,8 @@ public class SpringDataUserService implements UserService {
             throw new IllegalArgumentException("Cannot remove follower: illegal args: " + "userId == followerId: " +
                     userId);
         }
-        User user = findByIdOrElseThrow(userId);
-        User followerToRemove = findByIdOrElseThrow(followerId);
+        User user = getByIdOrElseThrow(userId);
+        User followerToRemove = getByIdOrElseThrow(followerId);
         boolean removed = user.removeFollower(followerToRemove);
         if (!removed) {
             throw new NoSuchElementException("Cannot remove follower. User with id " + followerId +

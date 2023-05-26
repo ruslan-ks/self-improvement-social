@@ -25,7 +25,7 @@ public class UserEmailValidatorImpl implements UserEmailValidator {
 
     @Override
     public void validate(String email, Errors errors) {
-        if (email != null && userService.findByEmail(email).isPresent()) {
+        if (email != null && userService.getByEmail(email).isPresent()) {
             String message = messageSource.getMessage("valid.user.email.inUse", null,
                     LocaleContextHolder.getLocale());
             errors.rejectValue("email", "valid.user.email.inUse", message);

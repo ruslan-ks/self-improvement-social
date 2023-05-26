@@ -13,7 +13,7 @@ public class SpringUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return new SpringUserDetails(userService.findByEmail(email)
+        return new SpringUserDetails(userService.getByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email '" + email + "' not found.")));
     }
 

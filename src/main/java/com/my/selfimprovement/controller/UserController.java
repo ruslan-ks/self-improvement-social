@@ -37,7 +37,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 @Slf4j
-public class UsersController {
+public class UserController {
 
     private final UserService userService;
 
@@ -69,7 +69,7 @@ public class UsersController {
 
     @GetMapping
     public ResponseBody getActiveUsersPage(Pageable pageable) {
-        List<ShortUserResponse> users = userService.findActiveUsersPage(pageable)
+        List<ShortUserResponse> users = userService.getActiveUsersPage(pageable)
                 .map(userMapper::toShortUserResponse)
                 .toList();
         return ResponseBody.ok("users", users);
@@ -83,7 +83,7 @@ public class UsersController {
 
     @GetMapping("{id}")
     public ResponseBody getById(@PathVariable("id") long userId) {
-        User user = userService.findByIdOrElseThrow(userId);
+        User user = userService.getByIdOrElseThrow(userId);
         DetailedUserResponse userDto = userMapper.toDetailedUserResponse(user);
         return ResponseBody.ok("user", userDto);
     }

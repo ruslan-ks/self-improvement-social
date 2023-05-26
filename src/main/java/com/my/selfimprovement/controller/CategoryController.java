@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 @Slf4j
-public class CategoriesController {
+public class CategoryController {
 
     private final CategoryService categoryService;
 

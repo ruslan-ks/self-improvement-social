@@ -22,9 +22,9 @@ public interface UserService {
      * @param email user email
      * @return found User optional
      */
-    Optional<User> findByEmail(String email);
+    Optional<User> getByEmail(String email);
 
-    Stream<User> findActiveUsersPage(Pageable pageable);
+    Stream<User> getActiveUsersPage(Pageable pageable);
 
     void save(@Valid User user);
 
@@ -32,9 +32,7 @@ public interface UserService {
 
     long count();
 
-    Optional<User> findById(long userId);
-
-    User findByIdOrElseThrow(long userId) throws UserNotFoundException;
+    User getByIdOrElseThrow(long userId) throws UserNotFoundException;
 
     /**
      * Saves {@code file} and assigns file name to user avatar field
