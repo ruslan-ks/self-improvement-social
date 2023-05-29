@@ -20,7 +20,8 @@ public class GenericCriteriaToPredicateConverter<T> extends CriteriaToPredicateC
         return switch (criteria.operation()) {
             case EQUAL -> builder.equal(root.get(field), value);
             case NOT_EQUAL -> builder.notEqual(root.get(field), value);
-            case LIKE -> builder.like(root.get(field), "%" + value + "%");
+            case LIKE -> builder.like(builder.lower(root.get(field)),
+                    "%" + value.toString().toLowerCase() + "%");
             case NULL -> builder.isNull(root.get(field));
             case NOT_NULL -> builder.isNotNull(root.get(field));
             case GREATER_EQUAL -> builder.greaterThanOrEqualTo(root.get(field), value.toString());
