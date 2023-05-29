@@ -1,4 +1,4 @@
-package com.my.selfimprovement.repository;
+package com.my.selfimprovement.repository.dao;
 
 import com.my.selfimprovement.repository.filter.EntityPageRequest;
 import com.my.selfimprovement.repository.filter.FilterCriteria;
