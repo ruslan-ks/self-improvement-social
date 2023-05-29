@@ -3,14 +3,13 @@ package com.my.selfimprovement.repository.filter;
 import java.util.Map;
 
 public enum FilterOperation {
-    EQUAL, NOT_EQUAL, LIKE, CONTAINS, DOES_NOT_CONTAIN, NULL, NOT_NULL, GREATER_EQUAL, LESS_EQUAL;
+    EQUAL, NOT_EQUAL, LIKE, CONTAINS, NULL, NOT_NULL, GREATER_EQUAL, LESS_EQUAL;
 
     private static final Map<FilterOperation, String> OPERATION_CODE_MAP = Map.of(
             EQUAL, "eq",
             NOT_EQUAL, "ne",
             LIKE, "lk",
             CONTAINS, "cn",
-            DOES_NOT_CONTAIN, "nc",
             NULL, "n",
             NOT_NULL, "nn",
             GREATER_EQUAL, "ge",
