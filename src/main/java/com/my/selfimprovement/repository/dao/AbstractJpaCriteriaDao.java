@@ -1,27 +1,27 @@
-package com.my.selfimprovement.repository;
+package com.my.selfimprovement.repository.dao;
 
 import com.my.selfimprovement.repository.filter.EntityPageRequest;
 import com.my.selfimprovement.repository.filter.FilterCriteria;
+import com.my.selfimprovement.repository.filter.converter.CriteriaToPredicateConverter;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class ConjunctionJpaCriteriaDao<T> {
+@RequiredArgsConstructor
+public abstract class AbstractJpaCriteriaDao<T> {
+
+    protected final Class<T> entityClass;
+
+    protected final CriteriaToPredicateConverter criteriaToPredicateConverter;
 
     @PersistenceContext
     protected EntityManager entityManager;
-
-    private final Class<T> entityClass;
-
-    protected ConjunctionJpaCriteriaDao(Class<T> entityClass) {
-        this.entityClass = entityClass;
-    }
 
     public Page<T> getPage(EntityPageRequest pageRequest, Collection<FilterCriteria> criteriaList) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -43,29 +43,11 @@ public abstract class ConjunctionJpaCriteriaDao<T> {
     }
 
     protected Predicate buildPredicate(Collection<FilterCriteria> criteriaList, CriteriaBuilder builder,
-                                     Root<T> root) {
-        List<Predicate> predicateList = new ArrayList<>();
-        for (var criteria : criteriaList) {
-            predicateList.add(filterCriteriaToPredicate(criteria, builder, root));
-        }
-        return builder.and(predicateList.toArray(new Predicate[0]));
-    }
-
-    protected Predicate filterCriteriaToPredicate(FilterCriteria criteria, CriteriaBuilder builder, Root<T> root) {
-        String field = criteria.field();
-        Object value = criteria.value();
-        return switch (criteria.operation()) {
-            case EQUAL -> builder.equal(root.get(field), value);
-            case NOT_EQUAL -> builder.notEqual(root.get(field), value);
-            case LIKE -> builder.like(root.get(field), "%" + value + "%");
-            case CONTAINS -> buildContainsOperationPredicate(criteria, builder, root);
-            case NULL -> builder.isNull(root.get(field));
-            case NOT_NULL -> builder.isNotNull(root.get(field));
-            case GREATER_EQUAL -> builder.greaterThanOrEqualTo(root.get(field), value.toString());
-            case LESS_EQUAL -> builder.lessThanOrEqualTo(root.get(field), value.toString());
-            default -> throw new UnsupportedOperationException("Operation '" + criteria.operation() +
-                    "' not supported for Activity");
-        };
+                                       Root<T> root) {
+        List<Predicate> predicateList = criteriaList.stream()
+                .map(criteria -> criteriaToPredicateConverter.convert(criteria, builder, root))
+                .toList();
+        return combine(predicateList);
     }
 
     protected Order buildOrder(EntityPageRequest pageRequest, Root<T> root, CriteriaBuilder builder) {
@@ -89,7 +71,6 @@ public abstract class ConjunctionJpaCriteriaDao<T> {
         return entityManager.createQuery(cq).getSingleResult();
     }
 
-    protected abstract Predicate buildContainsOperationPredicate(FilterCriteria criteria, CriteriaBuilder builder,
-                                                                 Root<T> root);
+    protected abstract Predicate combine(List<Predicate> predicateList);
 
 }
