@@ -6,13 +6,18 @@ import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.entity.Category;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.ActivityRepository;
+import com.my.selfimprovement.repository.dao.CriteriaDao;
+import com.my.selfimprovement.repository.filter.ActivityPageRequest;
+import com.my.selfimprovement.repository.filter.FilterCriteria;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +30,8 @@ import java.util.stream.Stream;
 public class SpringDataActivityService implements ActivityService {
 
     private final ActivityRepository activityRepository;
+
+    private final CriteriaDao<Activity> activityCriteriaDao;
 
     private final UserService userService;
 
@@ -51,6 +58,11 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     public Stream<Activity> getPage(Pageable pageable) {
         return activityRepository.findAll(pageable).stream();
+    }
+
+    @Override
+    public Page<Activity> getPage(ActivityPageRequest pageRequest, List<FilterCriteria> filterCriteriaList) {
+        return activityCriteriaDao.getPage(pageRequest, filterCriteriaList);
     }
 
     @Override
