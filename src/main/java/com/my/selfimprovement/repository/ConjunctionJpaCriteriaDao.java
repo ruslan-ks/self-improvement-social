@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ConjunctionJpaCriteriaDao<T> {
+public abstract class ConjunctionJpaCriteriaDao<T> {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     private final Class<T> entityClass;
 
@@ -35,8 +35,6 @@ public class ConjunctionJpaCriteriaDao<T> {
         TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
         typedQuery.setFirstResult(pageRequest.getPageNumber() * pageRequest.getPageSize());
         typedQuery.setMaxResults(pageRequest.getPageSize());
-
-        //Since Hibernate 6 Predicate cannot be reused. Build the same predicate again
 
         Pageable pageable = getPageable(pageRequest);
         long entityCount = getCount(criteriaList, builder);
@@ -60,8 +58,7 @@ public class ConjunctionJpaCriteriaDao<T> {
             case EQUAL -> builder.equal(root.get(field), value);
             case NOT_EQUAL -> builder.notEqual(root.get(field), value);
             case LIKE -> builder.like(root.get(field), "%" + value + "%");
-//                case CONTAINS -> builder.;
-//                case DOES_NOT_CONTAIN -> "";
+            case CONTAINS -> buildContainsOperationPredicate(criteria, builder, root);
             case NULL -> builder.isNull(root.get(field));
             case NOT_NULL -> builder.isNotNull(root.get(field));
             case GREATER_EQUAL -> builder.greaterThanOrEqualTo(root.get(field), value.toString());
@@ -92,6 +89,7 @@ public class ConjunctionJpaCriteriaDao<T> {
         return entityManager.createQuery(cq).getSingleResult();
     }
 
-    // TODO: add public count(List<FilterCriteria> criteriaList) method
+    protected abstract Predicate buildContainsOperationPredicate(FilterCriteria criteria, CriteriaBuilder builder,
+                                                                 Root<T> root);
 
 }
