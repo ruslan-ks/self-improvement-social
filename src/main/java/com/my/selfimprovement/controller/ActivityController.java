@@ -6,6 +6,7 @@ import com.my.selfimprovement.dto.response.DetailedActivityResponse;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.dto.response.ShortActivityResponse;
 import com.my.selfimprovement.entity.Activity;
+import com.my.selfimprovement.repository.filter.ActivityPageRequest;
 import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
@@ -13,13 +14,14 @@ import com.my.selfimprovement.util.validation.abstracts.ControllerLayerValidator
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/activities")
@@ -47,11 +49,21 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseBody getPage(Pageable pageable) {
-        List<ShortActivityResponse> activities = activityService.getPage(pageable)
+    public ResponseBody getPage(ActivityPageRequest pageRequest, String query) {
+        Page<Activity> page = activityService.getPage(pageRequest, query);
+        long totalCount = page.getTotalElements();
+        long pageNumber = page.getNumber();
+        long pageSize = page.getSize();
+        List<ShortActivityResponse> dtoList = page.stream()
                 .map(activityMapper::toShortActivityResponse)
                 .toList();
-        return ResponseBody.ok("activities", activities);
+        Map<String, ?> responseDataMap = Map.of(
+                "count", totalCount,
+                "page", pageNumber,
+                "size", pageSize,
+                "activities", dtoList
+        );
+        return ResponseBody.ok(responseDataMap);
     }
 
     @GetMapping("/count")
