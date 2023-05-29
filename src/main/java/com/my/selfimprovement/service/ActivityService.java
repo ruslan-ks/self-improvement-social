@@ -31,6 +31,8 @@ public interface ActivityService {
 
     Page<Activity> getPage(ActivityPageRequest pageRequest, List<FilterCriteria> filterCriteriaList);
 
+    Page<Activity> getPage(ActivityPageRequest pageRequest, String criteriaQuery);
+
     Optional<Activity> getById(long id);
 
     Activity getByIdOrElseThrow(long id) throws ActivityNotFoundException;

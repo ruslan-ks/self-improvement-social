@@ -9,6 +9,7 @@ import com.my.selfimprovement.repository.ActivityRepository;
 import com.my.selfimprovement.repository.dao.CriteriaDao;
 import com.my.selfimprovement.repository.filter.ActivityPageRequest;
 import com.my.selfimprovement.repository.filter.FilterCriteria;
+import com.my.selfimprovement.util.CriteriaQueryParser;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class SpringDataActivityService implements ActivityService {
 
     private final ActivityMapper activityMapper;
 
+    private final CriteriaQueryParser criteriaQueryParser;
+
     @Override
     @Transactional
     public Activity create(NewActivityRequest activityRequest, long authorId) {
@@ -63,6 +66,12 @@ public class SpringDataActivityService implements ActivityService {
     @Override
     public Page<Activity> getPage(ActivityPageRequest pageRequest, List<FilterCriteria> filterCriteriaList) {
         return activityCriteriaDao.getPage(pageRequest, filterCriteriaList);
+    }
+
+    @Override
+    public Page<Activity> getPage(ActivityPageRequest pageRequest, String criteriaQuery) {
+        List<FilterCriteria> filterCriteriaList = criteriaQueryParser.parse(criteriaQuery);
+        return getPage(pageRequest, filterCriteriaList);
     }
 
     @Override
