@@ -4,9 +4,13 @@ import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.util.i18n.UIMessage;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Map;
 
 public class HttpUtils {
 
@@ -44,6 +48,20 @@ public class HttpUtils {
                 .developerMessage(developerMessage)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseBody);
+    }
+
+    public static <T> ResponseEntity<ResponseBody> page(String pageKey, Page<T> page) {
+        long totalCount = page.getTotalElements();
+        long pageNumber = page.getNumber();
+        long pageSize = page.getSize();
+        List<T> dtoList = page.toList();
+        Map<String, ?> responseDataMap = Map.of(
+                "count", totalCount,
+                "page", pageNumber,
+                "size", pageSize,
+                pageKey, dtoList
+        );
+        return ResponseEntity.ok(ResponseBody.ok(responseDataMap));
     }
 
 }
