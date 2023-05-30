@@ -29,8 +29,21 @@ public interface ActivityService {
 
     Stream<Activity> getPage(Pageable pageable);
 
+    /**
+     * Returns activity page containing activities that match every criteria in {@code criteriaList}
+     * @param pageRequest pagination parameters object
+     * @param filterCriteriaList criteria list
+     * @return resulting page
+     */
     Page<Activity> getPage(ActivityPageRequest pageRequest, List<FilterCriteria> filterCriteriaList);
 
+    /**
+     * Parses {@code criteriaString} and calls {@link ActivityService#getPage(ActivityPageRequest, List)} to get page
+     * @param pageRequest pagination parameters object
+     * @param criteriaQuery query to be parsed
+     * @return resulting page
+     * @throws IllegalArgumentException if criteriaQuery is invalid
+     */
     Page<Activity> getPage(ActivityPageRequest pageRequest, String criteriaQuery);
 
     Optional<Activity> getById(long id);
