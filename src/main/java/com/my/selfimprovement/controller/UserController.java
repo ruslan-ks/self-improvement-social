@@ -152,7 +152,7 @@ public class UserController {
     }
 
     @Operation(summary = "Add currently logged user to followers of user with id {userId}")
-    @PutMapping("/{userId}/followers")
+    @PostMapping("/{userId}/followers")
     public ResponseEntity<ResponseBody> addFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {
         try {
             userService.addFollower(userId, jwtService.getUserId(jwt));
