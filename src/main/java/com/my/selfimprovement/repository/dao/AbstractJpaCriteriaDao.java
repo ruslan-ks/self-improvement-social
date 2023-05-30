@@ -33,8 +33,8 @@ public abstract class AbstractJpaCriteriaDao<T> {
         criteriaQuery.orderBy(buildOrder(pageRequest, root, builder));
 
         TypedQuery<T> typedQuery = entityManager.createQuery(criteriaQuery);
-        typedQuery.setFirstResult(pageRequest.getPageNumber() * pageRequest.getPageSize());
-        typedQuery.setMaxResults(pageRequest.getPageSize());
+        typedQuery.setFirstResult(pageRequest.getPage() * pageRequest.getSize());
+        typedQuery.setMaxResults(pageRequest.getSize());
 
         Pageable pageable = getPageable(pageRequest);
         long entityCount = getCount(criteriaList, builder);
@@ -59,7 +59,7 @@ public abstract class AbstractJpaCriteriaDao<T> {
 
     private Pageable getPageable(EntityPageRequest activityPaging) {
         Sort sort = Sort.by(activityPaging.getSortDirection(), activityPaging.getSortBy());
-        return PageRequest.of(activityPaging.getPageNumber(), activityPaging.getPageSize(), sort);
+        return PageRequest.of(activityPaging.getPage(), activityPaging.getSize(), sort);
     }
 
     private long getCount(Collection<FilterCriteria> criteriaList, CriteriaBuilder criteriaBuilder) {
