@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,16 +22,37 @@ public class RegexCriteriaQueryParser implements CriteriaQueryParser {
             return Collections.emptyList();
         }
         return SEPARATOR_PATTERN.splitAsStream(criteriaQuery)
-                .map(CRITERIA_EXPRESSION_PATTERN::matcher)
+                .map(RegexCriteriaQueryParser::matchesExpressionOrElseThrow)
                 .map(RegexCriteriaQueryParser::buildCriteria)
                 .toList();
     }
 
-    private static FilterCriteria buildCriteria(Matcher matcher) {
+    private static Matcher matchesExpressionOrElseThrow(String expression) {
+        Matcher matcher = CRITERIA_EXPRESSION_PATTERN.matcher(expression);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("Invalid query!");
+            throw new IllegalArgumentException("Invalid query expression: '" + expression + "'");
         }
-        return new FilterCriteria(matcher.group(1), FilterOperation.fromCode(matcher.group(2)), matcher.group(3));
+        return matcher;
+    }
+
+    private static FilterCriteria buildCriteria(Matcher matcher) {
+        String valueString = matcher.group(3);
+        Object value = parseIfNumber(valueString)
+                .map(o -> (Object) o)
+                .orElse(valueString);
+        return new FilterCriteria(matcher.group(1), FilterOperation.fromCode(matcher.group(2)), value);
+    }
+
+    private static Optional<? extends Number> parseIfNumber(String value) {
+        try {
+            return Optional.of(Double.parseDouble(value));
+        } catch (NumberFormatException e1) {
+            try {
+                return Optional.of(Long.parseLong(value));
+            } catch (NumberFormatException e2) {
+                return Optional.empty();
+            }
+        }
     }
 
 }
