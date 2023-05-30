@@ -6,6 +6,7 @@ import com.my.selfimprovement.dto.response.*;
 import com.my.selfimprovement.dto.request.UserRegistrationRequest;
 import com.my.selfimprovement.dto.response.ResponseBody;
 import com.my.selfimprovement.entity.User;
+import com.my.selfimprovement.repository.filter.UserPageRequest;
 import com.my.selfimprovement.service.UserService;
 import com.my.selfimprovement.service.token.JwtService;
 import com.my.selfimprovement.util.HttpUtils;
@@ -18,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -61,11 +64,14 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseBody getActiveUsersPage(Pageable pageable) {
-        List<ShortUserResponse> users = userService.getActiveUsersPage(pageable)
-                .map(userMapper::toShortUserResponse)
-                .toList();
-        return ResponseBody.ok("users", users);
+    public ResponseEntity<ResponseBody> getPage(UserPageRequest pageRequest, Optional<String> query) {
+        Page<User> page;
+        try {
+            page = userService.getPage(pageRequest, query.orElse(""));
+        } catch (IllegalArgumentException ex) {
+            return HttpUtils.badRequest(ex.getMessage());
+        }
+        return HttpUtils.page("users", page.map(userMapper::toShortUserResponse));
     }
 
     @GetMapping("/count")
