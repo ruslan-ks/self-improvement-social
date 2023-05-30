@@ -1,6 +1,7 @@
 package com.my.selfimprovement.repository.filter.converter;
 
 import com.my.selfimprovement.repository.filter.FilterCriteria;
+import com.my.selfimprovement.util.exception.FilterCriteriaConversionException;
 import com.my.selfimprovement.util.exception.FilterCriteriaException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -19,7 +20,8 @@ public abstract class CriteriaToPredicateConverterChain<T> implements CriteriaTo
     protected Predicate callNext(FilterCriteria criteria, CriteriaBuilder builder, Root<?> root)
             throws FilterCriteriaException {
         if (fallbackConverter == null) {
-            throw new FilterCriteriaException("Failed to convert criteria " + criteria);
+            throw new FilterCriteriaConversionException("Failed to convert criteria. No suitable converter found for "
+                    + criteria);
         }
         return fallbackConverter.convert(criteria, builder, root);
     }
