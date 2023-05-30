@@ -3,7 +3,7 @@ package com.my.selfimprovement.repository.filter.converter;
 import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.repository.filter.FilterCriteria;
 import com.my.selfimprovement.repository.filter.FilterOperation;
-import com.my.selfimprovement.util.exception.FilterCriteriaException;
+import com.my.selfimprovement.util.exception.FilterCriteriaConversionException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -22,7 +22,7 @@ public class ActivityCriteriaToPredicateConverter extends CriteriaToPredicateCon
 
     @Override
     public Predicate convert(FilterCriteria criteria, CriteriaBuilder builder, Root<?> root)
-            throws FilterCriteriaException {
+            throws FilterCriteriaConversionException {
         if (criteria.operation() == FilterOperation.CONTAINS && criteria.field().equals(CATEGORIES)) {
             return builder.isMember(criteria.value(), root.get(CATEGORIES));
         }
