@@ -34,6 +34,7 @@ public interface ActivityService {
      * @param pageRequest pagination parameters object
      * @param filterCriteriaList criteria list
      * @return resulting page
+     * @throws com.my.selfimprovement.util.exception.FilterCriteriaException if filtering fails
      */
     Page<Activity> getPage(ActivityPageRequest pageRequest, List<FilterCriteria> filterCriteriaList);
 
@@ -43,6 +44,7 @@ public interface ActivityService {
      * @param criteriaQuery query to be parsed
      * @return resulting page
      * @throws IllegalArgumentException if criteriaQuery is invalid
+     * @throws com.my.selfimprovement.util.exception.FilterCriteriaException if filtering fails
      */
     Page<Activity> getPage(ActivityPageRequest pageRequest, String criteriaQuery);
 
