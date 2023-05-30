@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/activities")
@@ -51,10 +52,10 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseBody> getPage(ActivityPageRequest pageRequest, String query) {
+    public ResponseEntity<ResponseBody> getPage(ActivityPageRequest pageRequest, Optional<String> query) {
         Page<Activity> page;
         try {
-            page = activityService.getPage(pageRequest, query);
+            page = activityService.getPage(pageRequest, query.orElse(""));
         } catch (IllegalArgumentException ex) {
             return HttpUtils.badRequest(ex.getMessage());
         }
