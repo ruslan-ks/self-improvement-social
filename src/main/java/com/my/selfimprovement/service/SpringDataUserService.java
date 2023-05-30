@@ -3,6 +3,10 @@ package com.my.selfimprovement.service;
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.UserRepository;
+import com.my.selfimprovement.repository.dao.CriteriaDao;
+import com.my.selfimprovement.repository.filter.FilterCriteria;
+import com.my.selfimprovement.repository.filter.UserPageRequest;
+import com.my.selfimprovement.util.CriteriaQueryParser;
 import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.exception.AvatarNotFoundException;
 import com.my.selfimprovement.util.exception.UserNotFoundException;
@@ -10,6 +14,7 @@ import com.my.selfimprovement.util.validation.UserValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -31,9 +37,13 @@ public class SpringDataUserService implements UserService {
 
     private final UserRepository userRepository;
 
+    private final CriteriaDao<User> userCriteriaDao;
+
     private final UserValidator userValidator;
 
     private final FileService fileService;
+
+    private final CriteriaQueryParser criteriaQueryParser;
 
     private static final Set<MediaType> allowedAvatarMediaTypes = Set.of(MediaType.IMAGE_JPEG, MediaType.IMAGE_PNG);
 
@@ -43,8 +53,13 @@ public class SpringDataUserService implements UserService {
     }
 
     @Override
-    public Stream<User> getActiveUsersPage(Pageable pageable) {
-        return userRepository.findByStatus(User.Status.ACTIVE, pageable).stream();
+    public Page<User> getPage(UserPageRequest pageRequest, String criteriaQuery) {
+        return getPage(pageRequest, criteriaQueryParser.parse(criteriaQuery));
+    }
+
+    @Override
+    public Page<User> getPage(UserPageRequest pageRequest, List<FilterCriteria> filterCriteriaList) {
+        return userCriteriaDao.getPage(pageRequest, filterCriteriaList);
     }
 
     @Override

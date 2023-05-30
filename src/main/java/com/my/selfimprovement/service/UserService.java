@@ -2,15 +2,19 @@ package com.my.selfimprovement.service;
 
 import com.my.selfimprovement.dto.request.UserUpdateRequest;
 import com.my.selfimprovement.entity.User;
+import com.my.selfimprovement.repository.filter.FilterCriteria;
+import com.my.selfimprovement.repository.filter.UserPageRequest;
 import com.my.selfimprovement.util.LoadedFile;
 import com.my.selfimprovement.util.exception.AvatarNotFoundException;
 import com.my.selfimprovement.util.exception.FileException;
 import com.my.selfimprovement.util.exception.UserNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -24,7 +28,24 @@ public interface UserService {
      */
     Optional<User> getByEmail(String email);
 
-    Stream<User> getActiveUsersPage(Pageable pageable);
+    /**
+     * Parses {@code criteriaQuery} and calls {@link UserService#getPage(UserPageRequest, List)} to get page
+     * @param pageRequest pagination parameters object
+     * @param criteriaQuery query to be parsed
+     * @return resulting page
+     * @throws IllegalArgumentException if criteriaQuery is invalid
+     * @throws com.my.selfimprovement.util.exception.FilterCriteriaException if filtering fails
+     */
+    Page<User> getPage(UserPageRequest pageRequest, String criteriaQuery);
+
+    /**
+     * Returns user page containing users that match every criteria in {@code criteriaList}
+     * @param pageRequest pagination parameters object
+     * @param filterCriteriaList criteria list
+     * @return resulting page
+     * @throws com.my.selfimprovement.util.exception.FilterCriteriaException if filtering fails
+     */
+    Page<User> getPage(UserPageRequest pageRequest, List<FilterCriteria> filterCriteriaList);
 
     void save(@Valid User user);
 

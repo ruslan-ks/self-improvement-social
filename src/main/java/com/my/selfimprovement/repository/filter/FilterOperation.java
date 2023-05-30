@@ -1,5 +1,7 @@
 package com.my.selfimprovement.repository.filter;
 
+import com.my.selfimprovement.util.exception.FilterCriteriaException;
+
 import java.util.Map;
 
 public enum FilterOperation {
@@ -25,7 +27,7 @@ public enum FilterOperation {
                 .filter(e -> e.getValue().equals(operationCode))
                 .findAny()
                 .map(Map.Entry::getKey)
-                .orElseThrow();
+                .orElseThrow(() -> new FilterCriteriaException("Unknown operation '" + operationCode + "'"));
     }
 
 }
