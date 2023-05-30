@@ -9,6 +9,7 @@ import com.my.selfimprovement.entity.Activity;
 import com.my.selfimprovement.repository.filter.ActivityPageRequest;
 import com.my.selfimprovement.service.ActivityService;
 import com.my.selfimprovement.service.token.JwtService;
+import com.my.selfimprovement.util.HttpUtils;
 import com.my.selfimprovement.util.exception.ActivityNotFoundException;
 import com.my.selfimprovement.util.validation.abstracts.ControllerLayerValidator;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -49,8 +51,13 @@ public class ActivityController {
     }
 
     @GetMapping
-    public ResponseBody getPage(ActivityPageRequest pageRequest, String query) {
-        Page<Activity> page = activityService.getPage(pageRequest, query);
+    public ResponseEntity<ResponseBody> getPage(ActivityPageRequest pageRequest, String query) {
+        Page<Activity> page;
+        try {
+            page = activityService.getPage(pageRequest, query);
+        } catch (IllegalArgumentException ex) {
+            return HttpUtils.badRequest(ex.getMessage());
+        }
         long totalCount = page.getTotalElements();
         long pageNumber = page.getNumber();
         long pageSize = page.getSize();
@@ -63,7 +70,7 @@ public class ActivityController {
                 "size", pageSize,
                 "activities", dtoList
         );
-        return ResponseBody.ok(responseDataMap);
+        return ResponseEntity.ok(ResponseBody.ok(responseDataMap));
     }
 
     @GetMapping("/count")
