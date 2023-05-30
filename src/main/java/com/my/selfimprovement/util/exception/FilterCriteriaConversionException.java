@@ -6,4 +6,7 @@ public class FilterCriteriaConversionException extends FilterCriteriaException {
         super(message);
     }
 
+    public FilterCriteriaConversionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

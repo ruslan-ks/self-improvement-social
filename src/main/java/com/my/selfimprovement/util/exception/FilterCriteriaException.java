@@ -6,4 +6,8 @@ public class FilterCriteriaException extends RuntimeException {
         super(message);
     }
 
+    public FilterCriteriaException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
