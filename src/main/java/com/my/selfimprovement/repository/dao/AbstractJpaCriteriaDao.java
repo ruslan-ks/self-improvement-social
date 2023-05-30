@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
-public abstract class AbstractJpaCriteriaDao<T> {
+public abstract class AbstractJpaCriteriaDao<T> implements CriteriaDao<T> {
 
     protected final Class<T> entityClass;
 
@@ -23,6 +23,7 @@ public abstract class AbstractJpaCriteriaDao<T> {
     @PersistenceContext
     protected EntityManager entityManager;
 
+    @Override
     public Page<T> getPage(EntityPageRequest pageRequest, Collection<FilterCriteria> criteriaList) {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = builder.createQuery(entityClass);
