@@ -5,7 +5,7 @@ import com.my.selfimprovement.entity.User;
 import com.my.selfimprovement.repository.dao.ConjunctionJpaCriteriaDao;
 import com.my.selfimprovement.repository.dao.CriteriaDao;
 import com.my.selfimprovement.repository.filter.converter.ActivityCriteriaToPredicateConverter;
-import com.my.selfimprovement.repository.filter.converter.GenericCriteriaToPredicateConverter;
+import com.my.selfimprovement.repository.filter.converter.UserCriteriaToPredicateConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,7 +18,7 @@ public class CriteriaDaosConfig {
     }
 
     @Bean
-    public CriteriaDao<User> userCriteriaDao(GenericCriteriaToPredicateConverter<User> converter) {
+    public CriteriaDao<User> userCriteriaDao(UserCriteriaToPredicateConverter converter) {
         return new ConjunctionJpaCriteriaDao<>(User.class, converter);
     }
 
