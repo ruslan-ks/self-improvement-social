@@ -14,7 +14,7 @@ This app uses Springdoc for API documenting. You can use its means to get the AP
 
 ### Consistent response body format
 All the responses issued by this REST API have similar structure represented by 
-``com.my.selfimprovement.dto.response.ResponseBody`` class, its fields are:    
+``response.dto.rkostiuk.selfimprovement.ResponseBody`` class, its fields are:    
 - timestamp
 - status
 - statusCode
