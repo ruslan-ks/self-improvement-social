@@ -11,11 +11,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public abstract class CriteriaToPredicateConverterChain<T> implements CriteriaToPredicateConverter {
+public abstract class CriteriaToPredicateConverterChain implements CriteriaToPredicateConverter {
 
     @Getter
     @Setter
-    protected CriteriaToPredicateConverterChain<T> fallbackConverter;
+    protected CriteriaToPredicateConverter fallbackConverter;
 
     protected Predicate callNext(FilterCriteria criteria, CriteriaBuilder builder, Root<?> root)
             throws FilterCriteriaException {

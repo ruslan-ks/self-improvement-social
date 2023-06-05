@@ -1,6 +1,6 @@
 package rkostiuk.selfimprovement.repository.filter.converter;
 
-import rkostiuk.selfimprovement.entity.User;
+import org.springframework.beans.factory.annotation.Qualifier;
 import rkostiuk.selfimprovement.repository.filter.FilterCriteria;
 import rkostiuk.selfimprovement.repository.filter.FilterOperation;
 import rkostiuk.selfimprovement.util.exception.FilterCriteriaConversionException;
@@ -10,9 +10,10 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserCriteriaToPredicateConverter extends CriteriaToPredicateConverterChain<User> {
+public class UserCriteriaToPredicateConverter extends CriteriaToPredicateConverterChain {
 
-    public UserCriteriaToPredicateConverter(CriteriaToPredicateConverterChain<User> fallbackConverter) {
+    public UserCriteriaToPredicateConverter(
+            @Qualifier("genericCriteriaToPredicateConverter") CriteriaToPredicateConverterChain fallbackConverter) {
         super(fallbackConverter);
     }
 

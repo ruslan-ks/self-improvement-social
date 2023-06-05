@@ -1,6 +1,5 @@
 package rkostiuk.selfimprovement.repository.filter.converter;
 
-import rkostiuk.selfimprovement.entity.Activity;
 import rkostiuk.selfimprovement.repository.filter.FilterCriteria;
 import rkostiuk.selfimprovement.repository.filter.FilterOperation;
 import rkostiuk.selfimprovement.util.exception.FilterCriteriaConversionException;
@@ -11,12 +10,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActivityCriteriaToPredicateConverter extends CriteriaToPredicateConverterChain<Activity> {
+public class ActivityCriteriaToPredicateConverter extends CriteriaToPredicateConverterChain {
 
     private static final String CATEGORIES = "categories";
 
     public ActivityCriteriaToPredicateConverter(
-            @Qualifier("genericCriteriaToPredicateConverter") CriteriaToPredicateConverterChain<Activity> converter) {
+            @Qualifier("genericCriteriaToPredicateConverter") CriteriaToPredicateConverterChain converter) {
         super(converter);
     }
 

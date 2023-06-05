@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component("genericCriteriaToPredicateConverter")
 @Slf4j
-public class GenericCriteriaToPredicateConverter<T> extends CriteriaToPredicateConverterChain<T> {
+public class GenericCriteriaToPredicateConverter extends CriteriaToPredicateConverterChain {
 
     public GenericCriteriaToPredicateConverter() {
         super(null);
