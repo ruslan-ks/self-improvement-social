@@ -43,7 +43,7 @@ public class UserActivityController {
     @GetMapping("/{userId}/activities/count")
     public rkostiuk.selfimprovement.dto.response.ResponseBody getUserActivityCount(@PathVariable long userId) {
         long count = userActivityService.count(userId);
-        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("user-activity-count", count);
+        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("userActivityCount", count);
     }
 
     @PostMapping("/activities")
