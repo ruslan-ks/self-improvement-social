@@ -45,10 +45,10 @@ public class RegexCriteriaQueryParser implements CriteriaQueryParser {
 
     private static Optional<? extends Number> parseIfNumber(String value) {
         try {
-            return Optional.of(Double.parseDouble(value));
+            return Optional.of(Long.parseLong(value));
         } catch (NumberFormatException e1) {
             try {
-                return Optional.of(Long.parseLong(value));
+                return Optional.of(Double.parseDouble(value));
             } catch (NumberFormatException e2) {
                 return Optional.empty();
             }
