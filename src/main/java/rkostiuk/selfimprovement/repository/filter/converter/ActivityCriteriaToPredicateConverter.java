@@ -1,7 +1,7 @@
 package rkostiuk.selfimprovement.repository.filter.converter;
 
 import rkostiuk.selfimprovement.repository.filter.FilterCriteria;
-import rkostiuk.selfimprovement.repository.filter.FilterOperation;
+import rkostiuk.selfimprovement.repository.filter.FilterOperator;
 import rkostiuk.selfimprovement.util.exception.FilterCriteriaConversionException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -22,7 +22,7 @@ public class ActivityCriteriaToPredicateConverter extends CriteriaToPredicateCon
     @Override
     public Predicate convert(FilterCriteria criteria, CriteriaBuilder builder, Root<?> root)
             throws FilterCriteriaConversionException {
-        if (criteria.operation() == FilterOperation.CONTAINS && criteria.field().equals(CATEGORIES)) {
+        if (criteria.operation() == FilterOperator.CONTAINS && criteria.field().equals(CATEGORIES)) {
             return builder.isMember(criteria.value(), root.get(CATEGORIES));
         }
         return callNext(criteria, builder, root);

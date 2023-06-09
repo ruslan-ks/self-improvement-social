@@ -1,7 +1,7 @@
 package rkostiuk.selfimprovement.util;
 
 import rkostiuk.selfimprovement.repository.filter.FilterCriteria;
-import rkostiuk.selfimprovement.repository.filter.FilterOperation;
+import rkostiuk.selfimprovement.repository.filter.FilterOperator;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -40,7 +40,7 @@ public class RegexCriteriaQueryParser implements CriteriaQueryParser {
         Object value = parseIfNumber(valueString)
                 .map(o -> (Object) o)
                 .orElse(valueString);
-        return new FilterCriteria(matcher.group(1), FilterOperation.fromCode(matcher.group(2)), value);
+        return new FilterCriteria(matcher.group(1), FilterOperator.fromCode(matcher.group(2)), value);
     }
 
     private static Optional<? extends Number> parseIfNumber(String value) {

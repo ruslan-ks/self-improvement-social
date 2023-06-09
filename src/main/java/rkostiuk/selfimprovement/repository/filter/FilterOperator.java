@@ -4,10 +4,10 @@ import rkostiuk.selfimprovement.util.exception.FilterCriteriaException;
 
 import java.util.Map;
 
-public enum FilterOperation {
+public enum FilterOperator {
     EQUAL, NOT_EQUAL, LIKE, CONTAINS, NULL, NOT_NULL, GREATER_EQUAL, LESS_EQUAL;
 
-    private static final Map<FilterOperation, String> OPERATION_CODE_MAP = Map.of(
+    private static final Map<FilterOperator, String> OPERATION_CODE_MAP = Map.of(
             EQUAL, "eq",
             NOT_EQUAL, "ne",
             LIKE, "lk",
@@ -18,11 +18,11 @@ public enum FilterOperation {
             LESS_EQUAL, "le"
     );
 
-    public static String getOperationCode(FilterOperation operation) {
+    public static String getOperationCode(FilterOperator operation) {
         return OPERATION_CODE_MAP.get(operation);
     }
 
-    public static FilterOperation fromCode(String operationCode) {
+    public static FilterOperator fromCode(String operationCode) {
         return OPERATION_CODE_MAP.entrySet().stream()
                 .filter(e -> e.getValue().equals(operationCode))
                 .findAny()

@@ -1,3 +1,3 @@
 package rkostiuk.selfimprovement.repository.filter;
 
-public record FilterCriteria(String field, FilterOperation operation, Object value) {}
+public record FilterCriteria(String field, FilterOperator operation, Object value) {}

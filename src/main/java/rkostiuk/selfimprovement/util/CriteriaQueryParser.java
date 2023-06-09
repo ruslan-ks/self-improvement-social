@@ -1,7 +1,7 @@
 package rkostiuk.selfimprovement.util;
 
 import rkostiuk.selfimprovement.repository.filter.FilterCriteria;
-import rkostiuk.selfimprovement.repository.filter.FilterOperation;
+import rkostiuk.selfimprovement.repository.filter.FilterOperator;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  *     <li>name like apple;categories cn 1;categories cn 2</li>
  *     <li>description like semicolon: \; - and it's ok!</li>
  * </ul>
- * @see FilterOperation
+ * @see FilterOperator
  * @see FilterCriteria
  */
 public interface CriteriaQueryParser {
