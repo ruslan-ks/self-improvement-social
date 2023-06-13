@@ -152,6 +152,13 @@ public class SpringDataUserService implements UserService {
     }
 
     @Override
+    public List<Long> getFollowingIds(long userId) throws UserNotFoundException {
+        return getByIdOrElseThrow(userId).getFollowings().stream()
+                .map(User::getId)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void addFollower(long userId, long newFollowerId) {
         if (userId == newFollowerId) {

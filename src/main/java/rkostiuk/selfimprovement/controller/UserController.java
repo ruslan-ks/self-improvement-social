@@ -152,6 +152,12 @@ public class UserController {
         return ResponseBody.ok("followings", followings);
     }
 
+    @GetMapping("/{userId}/following-ids")
+    public ResponseBody getFollowingIds(@PathVariable long userId) {
+        var followingIds = userService.getFollowingIds(userId);
+        return ResponseBody.ok("followingIds", followingIds);
+    }
+
     @Operation(summary = "Add currently logged user to followers of user with id {userId}")
     @PostMapping("/{userId}/followers")
     public ResponseEntity<ResponseBody> addFollower(@PathVariable long userId, @AuthenticationPrincipal Jwt jwt) {

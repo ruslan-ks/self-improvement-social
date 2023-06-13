@@ -93,6 +93,8 @@ public interface UserService {
 
     Stream<User> getFollowingsPage(long userId, Pageable pageable) throws UserNotFoundException;
 
+    List<Long> getFollowingIds(long userId) throws UserNotFoundException;
+
     /**
      * Adds following to user followings
      * @param userId user
