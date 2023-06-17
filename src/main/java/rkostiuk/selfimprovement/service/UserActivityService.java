@@ -10,11 +10,14 @@ import rkostiuk.selfimprovement.util.exception.UserNotFoundException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface UserActivityService {
 
     Stream<UserActivity> getPage(long userId, Pageable pageable) throws UserNotFoundException;
+
+    List<Long> getActivityIds(long userId) throws UserNotFoundException;
 
     long count(long userId) throws UserNotFoundException;
 

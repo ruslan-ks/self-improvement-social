@@ -33,22 +33,28 @@ public class UserActivityController {
 
     @Operation(summary = "Get user activities(activities user is going through)")
     @GetMapping("/{userId}/activities")
-    public rkostiuk.selfimprovement.dto.response.ResponseBody getUserActivities(@PathVariable long userId, Pageable pageable) {
+    public ResponseBody getUserActivities(@PathVariable long userId, Pageable pageable) {
         List<ShortUserActivityResponse> userActivities = userActivityService.getPage(userId, pageable)
                 .map(userActivityMapper::toShortUserActivityResponse)
                 .toList();
-        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("userActivities", userActivities);
+        return ResponseBody.ok("userActivities", userActivities);
     }
 
     @GetMapping("/{userId}/activities/count")
-    public rkostiuk.selfimprovement.dto.response.ResponseBody getUserActivityCount(@PathVariable long userId) {
+    public ResponseBody getUserActivityCount(@PathVariable long userId) {
         long count = userActivityService.count(userId);
-        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("userActivityCount", count);
+        return ResponseBody.ok("userActivityCount", count);
+    }
+
+    @GetMapping("/{userId}/activity-ids")
+    public ResponseBody getUserActivityIds(@PathVariable long userId) {
+        List<Long> activityIds = userActivityService.getActivityIds(userId);
+        return ResponseBody.ok("activityIds", activityIds);
     }
 
     @PostMapping("/activities")
-    public ResponseEntity<rkostiuk.selfimprovement.dto.response.ResponseBody> addUserActivity(@RequestParam("activityId") long activityId,
-                                                                                              @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<ResponseBody> addUserActivity(@RequestParam("activityId") long activityId,
+                                                        @AuthenticationPrincipal Jwt jwt) {
         try {
             userActivityService.add(activityId, jwtService.getUserId(jwt));
         } catch (IllegalStateException ex) {
@@ -65,24 +71,25 @@ public class UserActivityController {
 
     @Operation(summary = "Get user activity details including completions")
     @GetMapping("/{userId}/activities/{activityId}")
-    public rkostiuk.selfimprovement.dto.response.ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
+    public ResponseBody getUserActivity(@PathVariable long userId, @PathVariable long activityId) {
         UserActivity userActivity = userActivityService.getByKeyOrElseThrow(userId, activityId);
         DetailedUserActivityResponse response = userActivityMapper.toDetailedUserActivityResponse(userActivity);
-        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("userActivity", response);
+        return ResponseBody.ok("userActivity", response);
     }
 
     @Operation(summary = "Get user activities details including completions")
     @GetMapping("/{userId}/activities/completions")
-    public rkostiuk.selfimprovement.dto.response.ResponseBody getUserActivitiesCompletions(@PathVariable long userId, Pageable pageable) {
+    public ResponseBody getUserActivitiesCompletions(@PathVariable long userId, Pageable pageable) {
         List<DetailedUserActivityResponse> userActivities = userActivityService.getPage(userId, pageable)
                 .map(userActivityMapper::toDetailedUserActivityResponse)
                 .toList();
-        return rkostiuk.selfimprovement.dto.response.ResponseBody.ok("userActivities", userActivities);
+        return ResponseBody.ok("userActivities", userActivities);
     }
 
     @Operation(summary = "Add user activity completion")
     @PostMapping("/activities/{activityId}/completions")
-    public ResponseEntity<ResponseBody> addUserActivityCompletion(@PathVariable long activityId, @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<ResponseBody> addUserActivityCompletion(@PathVariable long activityId,
+                                                                  @AuthenticationPrincipal Jwt jwt) {
         long userId = jwtService.getUserId(jwt);
         try {
             userActivityService.addCompletion(userId, activityId);

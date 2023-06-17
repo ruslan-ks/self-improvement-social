@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -31,6 +32,14 @@ public class SpringDataUserActivityService implements UserActivityService {
     public Stream<UserActivity> getPage(long userId, Pageable pageable) {
         User user = userService.getByIdOrElseThrow(userId);
         return userActivityRepository.findUserActivitiesByUser(user, pageable).stream();
+    }
+
+    @Override
+    public List<Long> getActivityIds(long userId) throws UserNotFoundException {
+        return userService.getByIdOrElseThrow(userId).getActivities().stream()
+                .map(UserActivity::getUserActivityPK)
+                .map(UserActivityPK::getActivityId)
+                .toList();
     }
 
     @Override
