@@ -1,5 +1,8 @@
 # Self-improvement social network - REST API built with Spring
 
+*Client app built with Angular and Bootstrap resides in a separate repo:* 
+https://github.com/ruslan-ks/self-improvement-social-client
+
 ## Technologies used
 - Java 17
 - Spring boot 3
